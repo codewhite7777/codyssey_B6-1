@@ -126,6 +126,38 @@ LEFT JOIN ______ ON rental.member_id = member.id;
 
 **내 답**: member, rental → ✅
 
+### 5-3단계 · GROUP BY
+
+처음 GROUP BY를 COUNT, SUM, AVG와 함께 한 번에 배웠을 때는 이해하지 못했다. **COUNT 하나만, 카드 더미 그림으로** 다시 배우고 이해했다.
+
+**문제**: rental(member_id: 1, 1, 2, 1, 3)에 `id 6, member_id 2`가 추가되면 `SELECT member_id, COUNT(*) FROM rental GROUP BY member_id;` 결과는?
+
+| member_id | 내 답 | 정답 | 채점 |
+|---|---|---|---|
+| 1 | 3 | 3 | ✅ |
+| 2 | 2 | 2 | ✅ 6번 카드가 2번 더미로 |
+| 3 | 3 | **1** | ❌ 6번 카드는 3번 더미에 안 들어감 |
+
+**문제**: rental(book_id: 1, 3, 1, 2, 1, 3)에서 책별 대여 횟수는?
+
+**내 답**: `SELECT book.id COUNT(*) FROM rental GROUP BY book_id`
+
+**결과**: `GROUP BY book_id`는 ✅. 고칠 곳 두 개.
+- `book.id` → `book_id`: FROM에 rental만 꺼냈으니 book 표의 칸은 쓸 수 없다. rental 안의 `book_id`를 쓴다.
+- 칸 사이 쉼표 빠짐.
+
+```sql
+SELECT book_id, COUNT(*) FROM rental GROUP BY book_id;   -- 1번 책 3, 2번 책 1, 3번 책 2
+```
+
+**SELECT 문법 점검 7문제**: 대화 중 퀴즈로 풀었다. 문제는 README의 "SELECT 뒤에 쓰는 규칙 5개"에 정리.
+
+### 5-4 ~ 5-6단계
+
+- **서브쿼리**: 두 번 설명을 들었지만 아직 이해하지 못했다. 과제 구현을 먼저 하고, 완성된 쿼리를 보면서 다시 검토하기로 했다.
+- **UPDATE / DELETE**: FK 때문에 부모를 못 지우는 부분이 처음엔 이해되지 않았다. 부모와 자식을 **선으로 연결한 그림**("선이 붙어 있는 부모는 못 지운다")으로 이해했다.
+- **인덱스**: 책의 찾아보기로 이해했다.
+
 ---
 
 ## 헷갈렸던 질문
@@ -147,3 +179,6 @@ LEFT JOIN ______ ON rental.member_id = member.id;
 | 붙였을 때 실제로 남는 데이터는? | 줄은 **짝지어진 줄만**, 칸은 **두 표의 칸 전부**. 그중 SELECT에 적은 칸만 보여준다 |
 | ON 안의 왼쪽, 오른쪽을 바꾸면 값이 달라지나? | 안 달라진다. LEFT JOIN의 "왼쪽"은 `=`의 왼쪽이 아니라 **FROM에 쓴 표** |
 | "회원 이름과 대여 번호" 순서라서 `FROM member`인가? | 아니다. INNER JOIN은 순서 무관. LEFT JOIN일 때만 순서가 중요하고, 기준은 단어 순서가 아니라 **"누구를 전부 남길지"** |
+| COUNT는 칼럼 기준에 따라 옆에 총 토탈을 보여주는 건가? | 거의 맞다. 기준은 **GROUP BY에 적은 칸**이 정하고, 옆의 숫자는 전체 합계가 아니라 **그 값에 해당하는 줄 수**(더미별 개수) |
+| 자식이 있는 부모는 왜 못 지우나? | 지우면 자식이 **없는 번호를 가리키게** 된다. INSERT 때 없는 번호를 막은 것과 같은 규칙. 지울 때는 자식 먼저 |
+| 인덱스는 뭔가? | 책 맨 뒤의 **찾아보기**. 결과는 같고 찾는 속도만 빨라진다. WHERE, JOIN에 자주 쓰는 칸에 건다 |

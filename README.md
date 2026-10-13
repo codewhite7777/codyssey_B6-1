@@ -21,10 +21,12 @@
 | 4 | 샘플 데이터 (INSERT) | 3 | ✅ |
 | 5-1 | 기본 조회 (WHERE, ORDER BY, LIMIT) | 3, 5 | ✅ |
 | 5-2 | JOIN (INNER, LEFT) | 4 | ✅ |
-| 5-3 | 집계 (COUNT, SUM, AVG + GROUP BY) | 4, 5 | ⬜ |
-| 5-4 | 서브쿼리 | 5 | ⬜ |
-| 5-5 | UPDATE / DELETE | 3 | ⬜ |
-| 5-6 | 인덱스 | 6 | ⬜ |
+| 5-3 | 집계 (COUNT, SUM, AVG + GROUP BY) | 4, 5 | ✅ |
+| 5-4 | 서브쿼리 | 5 | 🔁 구현 후 다시 보기 |
+| 5-5 | UPDATE / DELETE | 3 | ✅ |
+| 5-6 | 인덱스 | 6 | ✅ |
+
+다음 순서: **과제 구현**(스키마 → 데이터 → 쿼리) → 완성된 쿼리로 **전체 개념 복습** → 서브쿼리가 어디에 쓰였는지 다시 검토.
 
 ## 제출물
 
@@ -86,11 +88,13 @@ member   (1) ──< rental (N)     회원 1명은 여러 번 대여할 수 있�
 |---|---|---|
 | category | id (PK), name | 책 분류 |
 | member | id (PK), name, email, phone | 회원 정보 |
-| book | id (PK), title, category_id (FK) | 책 정보 |
+| book | id (PK), title, category_id (FK), price | 책 정보 |
 | rental | id (PK), member_id (FK), book_id (FK), rented_at, returned_at | 누가 어떤 책을 언제 빌렸나 |
 
 - 테이블 4개, 1:N 관계 3개로 과제 조건(4개 이상, 2개 이상)을 만족합니다.
 - 만드는 순서와 데이터를 넣는 순서는 모두 **category → member → book → rental** (부모 먼저)입니다.
+- `book.price`는 SUM, AVG에 쓸 **숫자 칸**입니다. 과제가 "COUNT, SUM, AVG 중 2개 이상"을 요구하는데, id는 번호라서 더해도 의미가 없습니다.
+- "각 테이블 10행 이상"이라 category도 10개가 필요합니다. 책이 하나도 없는 카테고리를 일부러 두면 LEFT JOIN 결과가 의미 있게 나옵니다.
 
 ---
 
@@ -162,8 +166,10 @@ INSERT INTO rental (id, member_id, book_id, rented_at) VALUES (1, 1, 1, '2026-10
 |---|---|---|
 | `INSERT` | 새 행을 추가할 때 | 4단계 ✅ |
 | `SELECT` | 저장된 데이터를 꺼내 볼 때 | 5-1단계 ✅ |
-| `UPDATE` | 이미 있는 행의 값을 바꿀 때 | 5-5단계 ⬜ |
-| `DELETE` | 행 자체를 지울 때 | 5-5단계 ⬜ |
+| `UPDATE` | 이미 있는 행의 값을 바꿀 때 | 5-5단계 ✅ |
+| `DELETE` | 행 자체를 지울 때 | 5-5단계 ✅ |
+
+SELECT만 원본을 바꾸지 않고, 나머지 셋은 원본이 실제로 바뀝니다.
 
 **INSERT 읽는 법**
 
@@ -175,12 +181,65 @@ VALUES (1, '김철수', 'kim@a.com', '010-1111-1111'); -- 선언한 순서대로
 **SELECT 쓰는 순서와 실행 순서는 다릅니다.**
 
 ```text
-쓰는 순서:  SELECT → FROM → (JOIN … ON) → WHERE → ORDER BY → LIMIT
-실행 순서:  FROM → (JOIN … ON) → WHERE → SELECT → ORDER BY → LIMIT
+쓰는 순서:  SELECT → FROM → (JOIN … ON) → WHERE → GROUP BY → ORDER BY → LIMIT
+실행 순서:  FROM → (JOIN … ON) → WHERE → GROUP BY → SELECT → ORDER BY → LIMIT
 ```
 
-DB는 **어느 표에서(FROM) → 붙이고(JOIN) → 걸러내고(WHERE) → 칸을 고르고(SELECT) → 정렬하고 → 자릅니다.**
+DB는 **어느 표에서(FROM) → 붙이고(JOIN) → 걸러내고(WHERE) → 묶고(GROUP BY) → 칸을 고르고(SELECT) → 정렬하고 → 자릅니다.**
 SQL은 세미콜론(`;`)까지를 **한 문장**으로 끝까지 읽은 뒤 실행하기 때문에, 맨 앞에 쓴 SELECT가 뒤의 JOIN 결과에서 칸을 고를 수 있습니다.
+
+**SELECT 뒤에 쓰는 규칙 5개**
+
+1. 칸은 **쉼표**로 나눈다. 마지막 칸 뒤에는 쉼표를 쓰지 않는다.
+2. **꺼낸 표(FROM, JOIN)의 칸만** 쓸 수 있다. (`FROM rental`에서 `name`을 쓰면 `no such column`)
+3. 같은 이름의 칸이 두 표에 있으면 **`테이블.칸`**으로 쓴다. (`id`만 쓰면 `ambiguous column name`)
+4. GROUP BY를 쓰면 **묶은 기준 칸 + 집계 함수**만 쓴다.
+5. SELECT에 쓴 순서 = 결과 표의 칸 순서.
+
+> 쉼표를 빠뜨려 `SELECT id member_id`처럼 쓰면 에러 없이 "id 칸을 member_id라는 이름으로 보여줘"로 해석됩니다. 조용히 틀린 결과가 나오니 더 위험합니다.
+
+#### UPDATE: 이미 있는 값 바꾸기
+
+```sql
+UPDATE rental                       -- rental 표에서
+SET returned_at = '2026-10-14'      -- returned_at 칸을 이 값으로 바꿔라
+WHERE id = 3;                       -- 단, id가 3인 줄만
+```
+
+#### DELETE: 줄 자체를 지우기
+
+```sql
+DELETE FROM rental WHERE id = 1;
+```
+
+#### WHERE를 빠뜨리면 전체가 바뀐다
+
+`UPDATE rental SET returned_at = '2026-10-14';`는 **모든 줄**을, `DELETE FROM rental;`은 **모든 줄을 삭제**합니다. 에러도 나지 않습니다.
+바꾸기 전에 **같은 WHERE로 SELECT를 먼저** 실행해서 어떤 줄이 바뀔지 확인합니다.
+
+```sql
+SELECT * FROM rental WHERE id = 3;                          -- 1. 먼저 확인
+UPDATE rental SET returned_at = '2026-10-14' WHERE id = 3;  -- 2. 그다음 변경
+```
+
+#### FK가 있으면 자식이 가리키는 부모는 지울 수 없다
+
+![FK와 DELETE](docs/images/fk_delete.svg)
+
+김철수를 지우면 대여 기록 1, 2번이 **존재하지 않는 회원**을 가리키게 되므로 `FOREIGN KEY constraint failed`로 막힙니다.
+INSERT 때 "없는 번호를 새로 적는 것"을 막았던 것과 같은 규칙입니다.
+
+| 작업 | 순서 |
+|---|---|
+| 넣을 때 (INSERT) | 부모 → 자식 |
+| 지울 때 (DELETE) | **자식 → 부모** |
+
+```sql
+DELETE FROM rental WHERE member_id = 1;   -- 1. 자식(대여 기록) 먼저: 선이 사라짐
+DELETE FROM member WHERE id = 1;          -- 2. 이제 부모 삭제 가능
+```
+
+과제의 DELETE 쿼리는 rental 한 줄이나 대여 기록이 없는 회원처럼 **가리키는 자식이 없는 것**을 지우는 게 간단합니다.
 
 ### 4. JOIN과 GROUP BY로 연결된 데이터를 한 번에 뽑는 방법
 
@@ -239,13 +298,72 @@ LEFT JOIN rental ON rental.member_id = member.id
 WHERE rental.id IS NULL;
 ```
 
-#### GROUP BY
+#### GROUP BY: 같은 값끼리 더미를 나누고, 더미마다 계산한다
 
-5-3단계에서 정리 예정.
+대여 기록을 카드라고 생각하면, "회원별 대여 횟수"는 **카드를 회원 번호별로 더미를 나누고 더미마다 세는 것**입니다.
+
+```sql
+SELECT member_id, COUNT(*)
+FROM rental
+GROUP BY member_id;
+```
+
+![GROUP BY 카드 더미](docs/images/group_by.svg)
+
+| SQL | 손으로 할 때 |
+|---|---|
+| `GROUP BY member_id` | 회원 번호별로 **더미를 나눈다** |
+| `COUNT(*)` | 더미마다 **몇 장인지 센다** |
+| `SELECT member_id` | 그 더미가 **누구 것인지** 이름표를 같이 보여준다 |
+
+- 결과는 **더미 하나당 한 줄**입니다. 원본 5줄 → 결과 3줄.
+- GROUP BY 없이 `SELECT COUNT(*) FROM rental;`이면 표 전체가 한 덩어리라 **결과 한 줄**(전체 개수)입니다.
+- 옆에 붙는 숫자는 전체 합계가 아니라 **그 더미 안의 줄 수**입니다.
+
+**집계 함수 3개**: 더미 나누기는 셋 다 GROUP BY가 하고, 더미 안에서 하는 일만 다릅니다.
+
+| 함수 | 더미 안에서 하는 일 | 괄호 안 |
+|---|---|---|
+| `COUNT(*)` | 몇 줄인지 **센다** | `*` |
+| `SUM(price)` | **더한다** | 더할 숫자 칸 |
+| `AVG(price)` | **평균**을 낸다 | 평균 낼 숫자 칸 |
+
+```sql
+SELECT category_id, COUNT(*), SUM(price), AVG(price)
+FROM book
+GROUP BY category_id;
+```
+
+| category_id | 더미 안 (가격) | COUNT(*) | SUM(price) | AVG(price) |
+|---|---|---|---|---|
+| 1 | 해리포터 15000, 어린왕자 9000 | 2 | 24000 | 12000 |
+| 2 | 원피스 5000, 슬램덩크 6000 | 2 | 11000 | 5500 |
+| 3 | 코스모스 22000 | 1 | 22000 | 22000 |
+
+SQLite에서 실제로 실행하면 AVG는 `12000.0`처럼 소수점이 붙어서 나옵니다.
+
+**GROUP BY에서 SELECT 주의**: `SELECT title, COUNT(*) ... GROUP BY category_id`처럼 쓰면 1번 더미에 책이 두 권인데 제목을 하나만 보여줘야 합니다.
+다른 DB는 에러지만 **SQLite는 아무 값이나 하나 골라 보여줘서** 조용히 틀린 결과가 나옵니다.
+
+#### JOIN + GROUP BY: 이름을 먼저 붙이고, 묶어서 센다
+
+책 번호 대신 **제목으로** 대여 순위를 보려면, 아는 것 두 개를 이어 붙이면 됩니다.
+
+```sql
+SELECT book.title, COUNT(*)
+FROM rental
+JOIN book ON rental.book_id = book.id    -- 1. 대여 기록마다 제목 붙이기
+GROUP BY book.title                      -- 2. 제목별로 더미 나눠 세기
+ORDER BY COUNT(*) DESC;                  -- 3. 많은 순 = 인기 순위
+```
+
+![JOIN 후 GROUP BY](docs/images/join_group_by.svg)
+
+회원 이름별로 보려면 `book` → `member`, `book_id` → `member_id`, `title` → `name`만 바꿉니다.
 
 ### 5. 검색 / 정렬 / 집계 / 랭킹을 SQL로 어떻게 푸나
 
-아래 예시는 설명을 위해 book에 `price` 컬럼이 있다고 가정했습니다.
+아래 예시는 `book.price` 기준입니다.
 
 | 요구 | SQL | 예 |
 |---|---|---|
@@ -254,7 +372,9 @@ WHERE rental.id IS NULL;
 | 빈 값 찾기 | `IS NULL` | `WHERE returned_at IS NULL` (아직 반납 안 함) |
 | 정렬 | `ORDER BY ... ASC/DESC` | `ORDER BY price DESC` (큰 것부터) |
 | 개수 제한, 랭킹 | `ORDER BY` + `LIMIT` | `ORDER BY price DESC LIMIT 2` (가장 비싼 2권) |
-| 집계 | `COUNT`, `SUM`, `AVG` + `GROUP BY` | 5-3단계에서 정리 예정 |
+| 집계 | `COUNT`, `SUM`, `AVG` + `GROUP BY` | `GROUP BY category_id` (카테고리별 권수, 합계, 평균) |
+| 집계 + 랭킹 | `GROUP BY` + `ORDER BY ... DESC` + `LIMIT` | 가장 많이 대여된 책 TOP 3 |
+| 다른 결과로 거르기 | 서브쿼리 | 대여 기록이 없는 회원 (아래) |
 
 - 빈 값은 `= NULL`로 찾으면 아무것도 안 나옵니다. 반드시 `IS NULL`을 씁니다.
 - `ASC`(작은 것부터)는 기본값이라 생략할 수 있지만, 써두면 의도가 바로 보입니다.
@@ -264,6 +384,49 @@ WHERE rental.id IS NULL;
 SELECT title FROM book WHERE price < 10000 ORDER BY price ASC LIMIT 2;
 ```
 
+#### 서브쿼리: 질문을 두 번에 나눠서 하기 (🔁 구현 후 다시 보기)
+
+"대여 기록이 없는 회원은?"을 한 번에 답하기 어려우면 질문을 둘로 쪼갭니다.
+
+1. 빌린 적 있는 회원 번호는? → `SELECT member_id FROM rental;` → 1, 1, 2
+2. 회원 중 그 번호에 **없는** 사람은? → `SELECT name FROM member WHERE id NOT IN (1, 1, 2);`
+
+번호를 손으로 옮겨 적는 대신 **1번 질문을 괄호 안에 그대로 넣은 것**이 서브쿼리입니다.
+
+```sql
+SELECT name FROM member
+WHERE id NOT IN (SELECT member_id FROM rental);
+```
+
+![서브쿼리 두 단계](docs/images/subquery.svg)
+
+- **괄호 안을 먼저 실행해서 목록을 만들고**, 바깥 쿼리가 그 목록에 있는지(`IN`) 없는지(`NOT IN`)로 거릅니다.
+- 같은 답을 5-2단계의 `LEFT JOIN ... WHERE rental.id IS NULL`로도 구했습니다.
+
 ### 6. 인덱스는 왜 필요하고 어디에 거나
 
-5-6단계에서 정리 예정.
+인덱스는 **책 맨 뒤의 찾아보기(색인)**입니다. `WHERE member_id = 1`을 실행할 때 인덱스가 없으면 모든 줄을 처음부터 확인하고, 있으면 값 순서로 정리된 목록에서 바로 찾아갑니다.
+
+![인덱스](docs/images/index.svg)
+
+```sql
+CREATE INDEX idx_rental_member_id ON rental(member_id);
+-- 이유: 회원별 대여 조회(WHERE)와 JOIN에서 member_id로 자주 찾기 때문
+```
+
+| 부분 | 뜻 |
+|---|---|
+| `CREATE INDEX` | 찾아보기를 만들어라 |
+| `idx_rental_member_id` | 찾아보기 이름 (보통 `idx_테이블_칸`) |
+| `ON rental(member_id)` | rental 표의 member_id 칸으로 |
+
+**어느 칸에 거나**
+
+| 걸면 좋은 칸 | 이유 |
+|---|---|
+| WHERE에 자주 쓰는 칸 | 그 값으로 자주 찾으니까 |
+| JOIN의 ON에 쓰는 FK 칸 (`rental.member_id`, `rental.book_id`) | JOIN도 결국 "같은 번호 찾기"라서 |
+
+- PK와 UNIQUE 칸은 DB가 **이미 자동으로** 인덱스를 만들어 둡니다.
+- 아무 데나 다 걸면 안 됩니다. 줄을 넣거나 바꿀 때마다 인덱스도 같이 고쳐야 해서 **INSERT, UPDATE가 느려지고** 공간을 차지합니다.
+- 인덱스가 있든 없든 **결과는 똑같고, 찾는 속도만** 달라집니다. 6줄이면 차이가 없지만 100만 줄이면 크게 달라집니다.
