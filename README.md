@@ -32,8 +32,8 @@
 
 | 단계 | 설계할 것 | 파일 | 상태 |
 |---|---|---|---|
-| A. 스키마 | 테이블 4개의 칸, 타입, PK/FK, NOT NULL/UNIQUE | `sql/01_schema.sql` | 🔍 초안 검토 중 |
-| B. 샘플 데이터 | 테이블마다 10행 이상. 쿼리 결과가 의미 있게 나오도록 섞기 (안 빌린 회원, 반납 안 한 대여, 책 없는 카테고리) | `sql/02_data.sql` | ⬜ |
+| A. 스키마 | 테이블 4개의 칸, 타입, PK/FK, NOT NULL/UNIQUE | `sql/01_schema.sql` | ✅ |
+| B. 샘플 데이터 | 테이블마다 10행 이상. 쿼리 결과가 의미 있게 나오도록 섞기 (안 빌린 회원, 반납 안 한 대여, 책 없는 카테고리) | `sql/02_data.sql` | 🔍 다음 |
 | C. 쿼리 15개 | 과제 범주별 개수 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | `sql/03_queries.sql` | ⬜ |
 | D. 실행 결과 | 쿼리마다 결과 저장 | `results/` | ⬜ |
 | E. 복습 | 완성된 쿼리로 전체 개념 복습, 서브쿼리 재검토 | README | ⬜ |
@@ -42,7 +42,7 @@
 
 | 과제 요구 | 파일 | 상태 |
 |---|---|---|
-| 스키마 생성 SQL 1개 | [sql/01_schema.sql](sql/01_schema.sql) | 초안 검토 중 |
+| 스키마 생성 SQL 1개 | [sql/01_schema.sql](sql/01_schema.sql) | ✅ 검토 완료 |
 | 샘플 데이터 INSERT SQL 1개 | [sql/02_data.sql](sql/02_data.sql) | 작성 예정 |
 | 쿼리 15개 SQL 1개 | [sql/03_queries.sql](sql/03_queries.sql) | 작성 예정 |
 | 실행 결과 폴더 1개 | [results/](results/) | 작성 예정 |

@@ -160,6 +160,24 @@ SELECT book_id, COUNT(*) FROM rental GROUP BY book_id;   -- 1번 책 3, 2번 책
 
 ---
 
+## 구현 검토
+
+초안을 받고, 줄마다 "왜 이렇게 썼나"에 답하는 방식으로 검토했다.
+
+### A. 스키마 (`sql/01_schema.sql`)
+
+| 질문 | 내 답 | 정리 |
+|---|---|---|
+| CREATE TABLE만 하면 되지 DROP은 왜 필요한가? | (질문) | 두 번째 실행부터 `table already exists` 에러. 다시 실행할 수 있게 "있으면 지우고 새로". `IF EXISTS`는 처음 실행처럼 없을 때 넘어가게 함. `rm library.db`로 파일을 지우는 방법도 있지만 DROP 유지로 결정 |
+| DROP은 왜 CREATE와 순서가 반대인가? | 카테고리를 지우면 book이 참조하는 카테고리 값이 의미 없는 데이터가 되기 때문 | ✅ FK가 막는다. 만들 땐 가리킬 대상이 먼저 있어야, 지울 땐 나를 가리키는 게 먼저 없어야 |
+| `returned_at`에만 NOT NULL이 없는 이유는? | 처음엔 질문을 이해 못함 → 상황으로 다시 받고 "NOT NULL이면 에러 발생" | ✅ 빌리는 순간엔 반납일을 모름. NOT NULL이면 대여 기록 자체를 못 남김. NULL = 대여 중 (`WHERE returned_at IS NULL`) |
+| `book.category_id`에 NOT NULL을 건 이유는? | 등록할 때 카테고리를 알 수 있지 않나? | ✅ 알 수 있으니 거는 게 맞음. **FK는 NULL을 막지 않으므로** FK + NOT NULL을 같이 걸어야 "모든 책은 반드시 카테고리에 속함" |
+| `price`를 TEXT가 아니라 INTEGER로 한 이유는? | 글자로 정렬하면 숫자 정렬이 안 되고 아스키 기준 사전 순서로 정렬된다 | ✅ 실제로 `ORDER BY price DESC`에서 해리포터(15000)가 꼴찌, `WHERE price >= 10000`에 9000, 5000도 나옴. SUM은 맞게 나와서 더 알아채기 어려움 |
+
+**배운 점**: NOT NULL은 "저장하는 순간 반드시 알 수 있는 값"에만 건다. FK와 NOT NULL은 검사하는 게 달라서 같이 걸어야 할 때가 있다.
+
+---
+
 ## 헷갈렸던 질문
 
 | 질문 | 정리 |
