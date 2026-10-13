@@ -1,0 +1,86 @@
+Python 3.13.5 | SQLite 3.46.1 | Linux
+검증 대상: schema.sql, seed.sql, queries.sql
+
+PASS | Q01~Q15가 중복 없이 순서대로 존재
+PASS | 평가표의 7개 범주 및 개수 일치
+PASS | 샘플 행 수: 고객 12 / 메뉴 10 / 주문 12 / 주문상세 24
+PASS | 도메인 테이블 정확히 4개
+PASS | customer: PK 1개
+PASS | menu: PK 1개
+PASS | cafe_order: PK 1개
+PASS | order_item: PK 1개
+PASS | FK 3개로 고객-주문 / 주문-상세 / 메뉴-상세 연결
+PASS | 현재 연결 FK 검사 활성화
+PASS | 샘플에 FK 위반 없음
+PASS | DB 구조 무결성 검사 ok
+PASS | 뷰·트리거 없음
+PASS | 없는 고객 참조: FOREIGN KEY constraint failed
+  SQL: INSERT INTO cafe_order VALUES (90, 999, '2026-10-01 10:00:00')
+PASS | 없는 주문 참조: FOREIGN KEY constraint failed
+  SQL: INSERT INTO order_item VALUES (90, 999, 1, 1, 4000)
+PASS | 없는 메뉴 참조: FOREIGN KEY constraint failed
+  SQL: INSERT INTO order_item VALUES (90, 1, 999, 1, 4000)
+PASS | UPDATE로 FK 훼손 차단: FOREIGN KEY constraint failed
+  SQL: UPDATE cafe_order SET customer_id = 999 WHERE order_id = 1
+PASS | 주문 있는 고객 삭제 차단: FOREIGN KEY constraint failed
+  SQL: DELETE FROM customer WHERE customer_id = 1
+PASS | 상세 있는 주문 삭제 차단: FOREIGN KEY constraint failed
+  SQL: DELETE FROM cafe_order WHERE order_id = 1
+PASS | 판매된 메뉴 삭제 차단: FOREIGN KEY constraint failed
+  SQL: DELETE FROM menu WHERE menu_id = 1
+PASS | 중복 PK 차단: UNIQUE constraint failed: customer.customer_id
+  SQL: INSERT INTO customer VALUES (1, '테스트', 'test@example.com', '2026-10-01')
+PASS | 중복 이메일 차단: UNIQUE constraint failed: customer.email
+  SQL: UPDATE customer SET email = 'customer01@example.com' WHERE customer_id = 2
+PASS | 중복 메뉴명 차단: UNIQUE constraint failed: menu.name
+  SQL: UPDATE menu SET name = '아메리카노' WHERE menu_id = 2
+PASS | 같은 주문의 같은 메뉴 중복 차단: UNIQUE constraint failed: order_item.order_id, order_item.menu_id
+  SQL: INSERT INTO order_item VALUES (90, 1, 1, 1, 4000)
+PASS | NULL 이름 차단: NOT NULL constraint failed: customer.name
+  SQL: UPDATE customer SET name = NULL WHERE customer_id = 1
+PASS | NULL 고객 FK 차단: NOT NULL constraint failed: cafe_order.customer_id
+  SQL: UPDATE cafe_order SET customer_id = NULL WHERE order_id = 1
+PASS | 0개 수량 차단: CHECK constraint failed: typeof(quantity) = 'integer' AND quantity > 0
+  SQL: UPDATE order_item SET quantity = 0 WHERE order_item_id = 1
+PASS | 음수 수량 차단: CHECK constraint failed: typeof(quantity) = 'integer' AND quantity > 0
+  SQL: UPDATE order_item SET quantity = -1 WHERE order_item_id = 1
+PASS | 소수 수량 차단: CHECK constraint failed: typeof(quantity) = 'integer' AND quantity > 0
+  SQL: UPDATE order_item SET quantity = 1.5 WHERE order_item_id = 1
+PASS | 문자 수량 차단: CHECK constraint failed: typeof(quantity) = 'integer' AND quantity > 0
+  SQL: UPDATE order_item SET quantity = '많이' WHERE order_item_id = 1
+PASS | 0원 메뉴 차단: CHECK constraint failed: typeof(price_won) = 'integer' AND price_won > 0
+  SQL: UPDATE menu SET price_won = 0 WHERE menu_id = 1
+PASS | 소수 메뉴 가격 차단: CHECK constraint failed: typeof(price_won) = 'integer' AND price_won > 0
+  SQL: UPDATE menu SET price_won = 4000.5 WHERE menu_id = 1
+PASS | 문자 메뉴 가격 차단: CHECK constraint failed: typeof(price_won) = 'integer' AND price_won > 0
+  SQL: UPDATE menu SET price_won = '무료' WHERE menu_id = 1
+PASS | 음수 주문 단가 차단: CHECK constraint failed: typeof(unit_price_won) = 'integer' AND unit_price_won > 0
+  SQL: UPDATE order_item SET unit_price_won = -1 WHERE order_item_id = 1
+PASS | 오류 입력 검사 후 모든 원본 행 보존
+PASS | 부모 고객 → 주문 → 주문상세 순서의 정상 입력 성공
+PASS | Q01: 전체 결과값 및 정렬 순서 일치
+PASS | Q02: 전체 결과값 및 정렬 순서 일치
+PASS | Q03: 전체 결과값 및 정렬 순서 일치
+PASS | Q04: 전체 결과값 및 정렬 순서 일치
+PASS | Q05: 전체 결과값 및 정렬 순서 일치
+PASS | Q06: 전체 결과값 및 정렬 순서 일치
+PASS | Q07: 전체 결과값 및 정렬 순서 일치
+PASS | Q08: 전체 결과값 및 정렬 순서 일치
+PASS | Q09: 전체 결과값 및 정렬 순서 일치
+PASS | Q10: 전체 결과값 및 정렬 순서 일치
+PASS | Q11: 전체 결과값 및 정렬 순서 일치
+PASS | Q12: 전체 결과값 및 정렬 순서 일치
+PASS | Q13: 1행 수정 / 과거 단가 유지 / ROLLBACK 복원
+PASS | Q14: 1행 삭제 / 사라짐 확인 / ROLLBACK 복원
+PASS | Q15: ordered_at 인덱스 생성 및 컬럼 확인
+INFO | Q15 실행 계획: [(4, 0, 0, 'SEARCH cafe_order USING INDEX idx_cafe_order_ordered_at (ordered_at>? AND ordered_at<?)')]
+PASS | 15개 쿼리 실행 후 원본 데이터 전체 일치
+PASS | 전체 쿼리 2회 실행 시 동일한 조회·수정·삭제 결과
+PASS | 2회 실행 후에도 원본 데이터 전체 일치
+PASS | 인덱스 재실행 시 중복 생성 없음
+PASS | Q03: 시작 0시 포함 / 마지막 날 23:59:59 포함 / 다음 날 0시 제외
+PASS | DB 파일 저장 → 연결 종료 → 재접속 후 데이터 전체 일치
+PASS | 재접속 후에도 명시적으로 켠 FK가 실제 차단: FOREIGN KEY constraint failed
+  SQL: INSERT INTO cafe_order VALUES (90, 999, '2026-10-01 10:00:00')
+
+결과: 58개 검사 통과. 실패 0개.
