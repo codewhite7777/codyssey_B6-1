@@ -6,69 +6,87 @@
 
 **주제: 도서 대여 / DB: SQLite / 범위: 필수 요구사항만 (보너스 제외)**
 
-과제 순서대로 개념을 하나씩 공부하면서, 공부한 내용을 **과제 목표 6개** 기준으로 이 README에 정리합니다.
-각 개념은 "원본 표 → 짝 맞추기 → 결과 표"처럼 **실제 데이터로 따라가는 방식**으로 적었습니다.
-직접 풀어 본 확인 문제와 헷갈렸던 질문은 [docs/practice.md](docs/practice.md)에 있습니다.
+이 README는 과제 문서의 순서(1~8)대로 **무엇을 어디에 구현했고, 어떻게 확인하는지**를 정리합니다. 개념 설명은 따로 분리했습니다.
+
+| 문서 | 내용 |
+|---|---|
+| README.md (이 문서) | 과제 순서, 요구사항별 구현 위치와 확인 방법 |
+| [docs/concepts.md](docs/concepts.md) | 과제 목표 6개 개념 정리 (그림 포함) |
+| [docs/practice.md](docs/practice.md) | 확인 문제와 내 답, 헷갈렸던 질문, 구현 검토 기록 |
+| [docs/evaluation.md](docs/evaluation.md) | 피어 평가 항목별 답과 보여줄 곳 |
 
 ## 진행 상황
 
-| 단계 | 내용 | 과제 목표 | 상태 |
-|---|---|---|---|
-| 0 | DB와 엑셀의 차이 | 1 | ✅ |
-| 1 | DB 환경 준비 (SQLite) | - | ✅ |
-| 2 | 스키마 설계 (PK, FK, 1:N) | 2 | ✅ |
-| 3 | 제약조건 (NOT NULL, UNIQUE, FK) | 2 | ✅ |
-| 4 | 샘플 데이터 (INSERT) | 3 | ✅ |
-| 5-1 | 기본 조회 (WHERE, ORDER BY, LIMIT) | 3, 5 | ✅ |
-| 5-2 | JOIN (INNER, LEFT) | 4 | ✅ |
-| 5-3 | 집계 (COUNT, SUM, AVG + GROUP BY) | 4, 5 | ✅ |
-| 5-4 | 서브쿼리 | 5 | 🔁 구현 후 다시 보기 |
-| 5-5 | UPDATE / DELETE | 3 | ✅ |
-| 5-6 | 인덱스 | 6 | ✅ |
+초안을 만들고, 줄마다 "왜 이렇게 썼나"를 묻고 답하며 검토합니다. 검토 내용은 [docs/practice.md](docs/practice.md)에 남깁니다.
 
-### 구현 단계
-
-초안을 만들고, 줄마다 "왜 이렇게 썼나"를 묻고 답하며 검토하는 방식으로 진행합니다. 검토에서 나온 질문과 답은 [docs/practice.md](docs/practice.md)에 남깁니다.
-
-| 단계 | 설계할 것 | 파일 | 상태 |
+| 단계 | 할 일 | 파일 | 상태 |
 |---|---|---|---|
 | A. 스키마 | 테이블 4개의 칸, 타입, PK/FK, NOT NULL/UNIQUE | `sql/01_schema.sql` | ✅ |
-| B. 샘플 데이터 | 테이블마다 10행 이상. 쿼리 결과가 의미 있게 나오도록 섞기 (안 빌린 회원, 반납 안 한 대여, 책 없는 카테고리) | `sql/02_data.sql` | 🔍 다음 |
-| C. 쿼리 15개 | 과제 범주별 개수 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | `sql/03_queries.sql` | ⬜ |
+| B. 샘플 데이터 | 테이블마다 10행 이상, 쿼리 결과가 의미 있게 섞기 | `sql/02_data.sql` | 🔍 초안 검토 중 |
+| C. 쿼리 15개 | 조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1 | `sql/03_queries.sql` | ⬜ |
 | D. 실행 결과 | 쿼리마다 결과 저장 | `results/` | ⬜ |
-| E. 복습 | 완성된 쿼리로 전체 개념 복습, 서브쿼리 재검토 | README | ⬜ |
+| E. 복습 | 완성된 쿼리로 전체 개념 복습, 서브쿼리 재검토 | `docs/concepts.md` | ⬜ |
 
-## 제출물
+---
+
+## 1. 미션 소개
+
+도서관에서 **회원이 책을 빌리고 반납하는 기록**을 DB로 관리합니다.
+백엔드 프레임워크 없이 SQL만으로 **데이터 모델링 → 데이터 입력 → 요구사항을 SQL로 해결**하는 흐름을 완성합니다.
+
+## 2. 최종 결과물
 
 | 과제 요구 | 파일 | 상태 |
 |---|---|---|
-| 스키마 생성 SQL 1개 | [sql/01_schema.sql](sql/01_schema.sql) | ✅ 검토 완료 |
-| 샘플 데이터 INSERT SQL 1개 | [sql/02_data.sql](sql/02_data.sql) | 작성 예정 |
-| 쿼리 15개 SQL 1개 | [sql/03_queries.sql](sql/03_queries.sql) | 작성 예정 |
-| 실행 결과 폴더 1개 | [results/](results/) | 작성 예정 |
+| 도메인 DB 1개 (테이블 4개 이상, 1:N 2개 이상) | 도서 대여 DB: 테이블 4개, 1:N 3개 | ✅ |
+| 스키마 생성 스크립트 1개 | [sql/01_schema.sql](sql/01_schema.sql) | ✅ |
+| 샘플 데이터 입력 스크립트 1개 (테이블당 10행 이상) | [sql/02_data.sql](sql/02_data.sql) | 🔍 초안 검토 중 |
+| 핵심 쿼리 15개 | [sql/03_queries.sql](sql/03_queries.sql) | ⬜ |
+| 실행 결과 캡처 폴더 | [results/](results/) | ⬜ |
+| (선택) ERD | [4-2](#4-2-데이터-모델스키마-설계)의 텍스트 관계도로 대체 | ✅ |
 
 ```text
 codyssey_B6-1/
-├── README.md            과제 목표 6개 기준 학습 정리
+├── README.md            과제 순서와 요구사항별 확인 방법
 ├── sql/
 │   ├── 01_schema.sql    CREATE TABLE (부모 → 자식 순서)
 │   ├── 02_data.sql      INSERT (부모 → 자식 순서)
 │   └── 03_queries.sql   핵심 쿼리 15개
 ├── results/             쿼리 실행 결과
 └── docs/
-    ├── practice.md      확인 문제, 내 답, 헷갈렸던 질문
-    └── images/          README 그림
+    ├── concepts.md      개념 정리
+    ├── practice.md      연습과 검토 기록
+    ├── evaluation.md    피어 평가 준비
+    └── images/          그림
 ```
 
-## 실행 방법
+## 3. 과제 목표
 
-macOS에는 SQLite가 기본으로 설치되어 있습니다. `sqlite3 --version`으로 확인합니다.
+목표마다 개념은 concepts.md에, 실제로 쓰인 곳은 이 레포의 SQL 파일에서 확인합니다.
+
+| 과제 목표 | 개념 정리 | 구현에서 확인할 곳 |
+|---|---|---|
+| 1. DB가 엑셀과 뭐가 다른지, 왜 테이블로 나누는지 | [개념 1](docs/concepts.md#1-db는-엑셀과-뭐가-다른가-왜-테이블로-나눠-저장하나) | [4-3 제약조건](#4-3-제약조건-적용) |
+| 2. PK/FK와 1:N 관계 | [개념 2](docs/concepts.md#2-pk--fk--1n-관계는-데이터를-어떻게-연결하나) | [4-2 관계도](#4-2-데이터-모델스키마-설계), `01_schema.sql` |
+| 3. SELECT / INSERT / UPDATE / DELETE 구분 | [개념 3](docs/concepts.md#3-select--insert--update--delete는-언제-쓰나) | `02_data.sql`, `03_queries.sql` 수정/삭제 |
+| 4. JOIN과 GROUP BY | [개념 4](docs/concepts.md#4-join과-group-by로-연결된-데이터를-한-번에-뽑는-방법) | `03_queries.sql` 조인, 집계 |
+| 5. 검색 / 정렬 / 집계 / 랭킹 | [개념 5](docs/concepts.md#5-검색--정렬--집계--랭킹을-sql로-어떻게-푸나) | `03_queries.sql` 기본 조회, 집계, 서브쿼리 |
+| 6. 인덱스가 왜 필요한지, 어디에 거는지 | [개념 6](docs/concepts.md#6-인덱스는-왜-필요하고-어디에-거나) | `03_queries.sql` 인덱스 |
+
+## 4. 기능 요구 사항
+
+### 4-1. DB 환경 준비
+
+| 요구 | 선택 | 이유 |
+|---|---|---|
+| 로컬 DB 1개 | SQLite | macOS에 기본 설치, 파일 하나가 DB라 서버 실행이 필요 없음 |
+| SQL 실행 도구 | 터미널 CLI (`sqlite3`) | 별도 설치 없이 바로 실행, 결과를 텍스트로 저장하기 쉬움 |
+
+**실행 방법**
 
 ```bash
 sqlite3 library.db
 ```
-
-`sqlite>` 표시가 나오면 DB 안에 들어온 상태입니다. 아래를 순서대로 실행합니다.
 
 ```sql
 PRAGMA foreign_keys = ON;   -- SQLite 전용. 접속할 때마다 켜야 FK 검사가 동작함
@@ -80,363 +98,114 @@ PRAGMA foreign_keys = ON;   -- SQLite 전용. 접속할 때마다 켜야 FK 검�
 .quit
 ```
 
-`library.db`는 SQL 파일만 있으면 언제든 다시 만들 수 있어서 레포에 올리지 않습니다 (`.gitignore`).
+- `01_schema.sql`은 맨 앞에서 기존 테이블을 지우고(`DROP TABLE IF EXISTS`) 새로 만들어서 **몇 번이든 다시 실행**할 수 있습니다.
+- `library.db`는 SQL 파일로 언제든 다시 만들 수 있어 레포에 올리지 않습니다 (`.gitignore`).
+- DB 전용 문법(`PRAGMA` 등)은 SQL 파일에 주석으로 표시했습니다.
 
-## 테이블 설계
-
-학습하면서 정한 구조입니다. 최종 컬럼은 [sql/01_schema.sql](sql/01_schema.sql)을 기준으로 합니다.
+### 4-2. 데이터 모델(스키마) 설계
 
 ```text
-category (1) ──< book   (N)     카테고리 1개에 책 여러 권
-book     (1) ──< rental (N)     책 1권은 여러 번 대여될 수 있음
-member   (1) ──< rental (N)     회원 1명은 여러 번 대여할 수 있음
+category (1) ──< book   (N)     카테고리 1개에 책 여러 권      book.category_id → category.id
+book     (1) ──< rental (N)     책 1권은 여러 번 대여됨         rental.book_id   → book.id
+member   (1) ──< rental (N)     회원 1명은 여러 번 대여함       rental.member_id → member.id
 ```
 
-`(1)`은 하나, `(N)`은 여러 개, `<`가 붙은 쪽이 **여러 개 쪽**이고 **FK를 가진 테이블**입니다.
+`<`가 붙은 쪽이 여러 개(N) 쪽이고 FK를 가진 테이블입니다.
 
-| 테이블 | 주요 컬럼 | 역할 |
+| 테이블 | 칸 (타입) | 제약조건 |
 |---|---|---|
-| category | id (PK), name | 책 분류 |
-| member | id (PK), name, email, phone | 회원 정보 |
-| book | id (PK), title, category_id (FK), price | 책 정보 |
-| rental | id (PK), member_id (FK), book_id (FK), rented_at, returned_at | 누가 어떤 책을 언제 빌렸나 |
+| category | id (INTEGER), name (TEXT) | PK, name NOT NULL UNIQUE |
+| member | id (INTEGER), name (TEXT), email (TEXT), phone (TEXT) | PK, name NOT NULL, email NOT NULL UNIQUE |
+| book | id (INTEGER), title (TEXT), category_id (INTEGER), price (INTEGER) | PK, FK, 모두 NOT NULL |
+| rental | id (INTEGER), member_id (INTEGER), book_id (INTEGER), rented_at (DATE), returned_at (DATE) | PK, FK 2개, returned_at만 NULL 허용 (NULL = 대여 중) |
 
-- 테이블 4개, 1:N 관계 3개로 과제 조건(4개 이상, 2개 이상)을 만족합니다.
-- 만드는 순서와 데이터를 넣는 순서는 모두 **category → member → book → rental** (부모 먼저)입니다.
-- `book.price`는 SUM, AVG에 쓸 **숫자 칸**입니다. 과제가 "COUNT, SUM, AVG 중 2개 이상"을 요구하는데, id는 번호라서 더해도 의미가 없습니다.
-- "각 테이블 10행 이상"이라 category도 10개가 필요합니다. 책이 하나도 없는 카테고리를 일부러 두면 LEFT JOIN 결과가 의미 있게 나옵니다.
+| 요구 | 충족 |
+|---|---|
+| 테이블 4개 이상 | ✅ 4개 |
+| 각 테이블에 PK | ✅ |
+| FK로 1:N 관계 2개 이상 | ✅ 3개 |
+| 컬럼 타입을 의미에 맞게 | ✅ 글자 TEXT, 숫자 INTEGER, 날짜 DATE (`book.price`는 정렬, 비교, SUM/AVG를 위해 INTEGER) |
+| 이름이 역할을 드러내게 | ✅ `member_id`, `rented_at`, `returned_at` 등 |
 
----
+### 4-3. 제약조건 적용
 
-## 과제 목표 정리
+아래 SQL은 모두 **막혀야 정상**입니다. 스키마와 데이터를 넣은 뒤 실행해서 확인합니다.
 
-### 1. DB는 엑셀과 뭐가 다른가, 왜 테이블로 나눠 저장하나
-
-엑셀 한 시트에 대여 기록을 모두 적으면 이렇게 됩니다.
-
-| 회원이름 | 전화번호 | 책제목 | 대여일 |
+| 요구 | 적용한 곳 | 확인 SQL | 기대 결과 |
 |---|---|---|---|
-| 김철수 | 010-1111 | 해리포터 | 10/01 |
-| 김철수 | 010-1111 | 어린왕자 | 10/05 |
-| 이영희 | 010-2222 | 해리포터 | 10/07 |
+| NOT NULL 1개 이상 | `member.name`, `book.title` 등 | `INSERT INTO member (id, name, email) VALUES (99, NULL, 'x@example.com');` | `NOT NULL constraint failed` |
+| UNIQUE 1개 이상 | `member.email`, `category.name` | `INSERT INTO member (id, name, email) VALUES (99, '홍길동', 'member01@example.com');` | `UNIQUE constraint failed` |
+| FK가 실제로 동작 | `PRAGMA foreign_keys = ON` + `REFERENCES` | `INSERT INTO rental (id, member_id, book_id, rented_at) VALUES (99, 999, 1, '2026-10-14');` | `FOREIGN KEY constraint failed` |
 
-- **중복**: 김철수의 정보가 대여할 때마다 반복됩니다.
-- **수정 문제**: 번호가 바뀌면 모든 줄을 고쳐야 하고, 하나라도 빠뜨리면 데이터가 서로 안 맞습니다.
-- **잘못된 입력**: 없는 회원이나 오타를 적어도 막지 않습니다.
+### 4-4. 샘플 데이터 준비
 
-DB는 **주제별로 테이블을 나누고, 번호로 연결**합니다. 회원 정보는 member에 한 번만 있고, rental은 이름 대신 `member_id`(번호)만 갖습니다.
-
-| 질문 | 엑셀 | DB |
+| 테이블 | 행 수 | 넣는 순서 |
 |---|---|---|
-| 각 행을 구분하는 번호 | 행 번호는 **위치**라 정렬하면 바뀜 | PK는 데이터에 붙은 **이름표**라 안 바뀜 |
-| 없는 회원 번호 99를 적으면 | 그냥 저장됨 | **FK가 막음** |
-| 빈 이름, 중복 이메일 | 그냥 저장됨 | **제약조건이 막음** |
+| category | 10 | 1 (부모) |
+| member | 10 | 2 (부모) |
+| book | 12 | 3 (category의 자식) |
+| rental | 15 | 4 (member, book의 자식) |
 
-PK는 엑셀에서도 id 열을 만들어 흉내 낼 수 있습니다. 결정적인 차이는 **FK와 제약조건으로 관계와 규칙을 DB가 강제한다**는 점입니다.
+쿼리 결과가 "아무것도 안 나옴"이나 "전부 나옴"이 되지 않도록 **일부러 섞은 데이터**입니다.
 
-> 주의: SQLite는 **타입은 엄격하게 지키지 않습니다.** `INTEGER` 칸에 `'abc'`를 넣어도 대부분 저장됩니다 (`INTEGER PRIMARY KEY` 제외). 반면 NOT NULL, UNIQUE, FK 같은 **제약조건을 어기면 거부**합니다.
-
-### 2. PK / FK / 1:N 관계는 데이터를 어떻게 연결하나
-
-- **PK (기본키)**: 각 행을 구분하는 고유 번호. 비어 있을 수 없고 겹칠 수 없음 (= NOT NULL + UNIQUE).
-- **FK (외래키)**: 다른 테이블의 PK를 가리키는 칸. 예: `rental.member_id → member.id`
-- **1:N**: 한쪽 1개가 반대쪽 여러 개와 연결되는 관계. **FK는 항상 N(여러 개) 쪽에 둡니다.**
-
-**왜 FK가 N 쪽에 있어야 하나**: book에 `member_id`를 넣으면 책 한 권당 회원 칸이 하나뿐이라, 해리포터를 빌린 김철수와 이영희 중 한 명만 적을 수 있습니다.
-그래서 "누가 어떤 책을 언제 빌렸다"는 **사건 자체를 rental에 기록**하고, rental이 `member_id`와 `book_id`를 모두 들고 있습니다.
-
-#### 제약조건: 이런 데이터는 받지 않는다
-
-| 제약 | 의미 | 이 설계에서 |
+| 섞은 데이터 | 어떤 행 | 확인할 쿼리 |
 |---|---|---|
-| `NOT NULL` | 빈 값 금지 | 이름 없는 회원은 이상함 → `member.name` |
-| `UNIQUE` | 중복 금지 | 이메일로 회원을 구분 → `member.email` |
-| `FOREIGN KEY` | 없는 번호 참조 금지 | `rental.member_id`, `rental.book_id`, `book.category_id` |
+| 책이 한 권도 없는 카테고리 | 시집, 요리 | category LEFT JOIN book |
+| 한 번도 안 빌린 회원 | 박민수, 한서윤 | member LEFT JOIN rental, 서브쿼리 |
+| 한 번도 안 빌린 책 | 국부론, 하루 한 줄 에세이 | book LEFT JOIN rental |
+| 아직 반납 안 한 대여 | rental 12~15 | 대여 중 조회, UPDATE 반납 처리 |
+| 많이 빌린 회원과 책 | 김철수 4회, 해리포터와 마법사의 돌 4회 | GROUP BY 인기 순위 |
+| 가격 5,000 ~ 25,000원 | book 전체 | WHERE 범위, 정렬, SUM/AVG |
+| 제목에 같은 단어 | "해리포터" 2권 | LIKE 검색 |
+| 대여일 9월 ~ 10월 | rental 전체 | 날짜 정렬, 최근 대여 |
+| 전화번호 없는 회원 | 임도현, 오지훈 | phone NULL 허용 |
 
-- 한 컬럼에 여러 개를 같이 걸 수 있습니다: `email TEXT NOT NULL UNIQUE` (UNIQUE만 걸면 빈 값은 막지 않음).
-- 판단 기준: **"이 값이 없으면 안 되나?" → NOT NULL**, **"이 값으로 사람을 구분하나?" → UNIQUE**.
-- 제약조건은 정답이 정해진 게 아니라 **서비스 규칙을 DB에 옮기는 것**입니다. (예: 가족이 전화번호를 같이 쓸 수 있으면 phone에는 UNIQUE를 걸지 않음)
-- **SQLite는 FK 검사가 기본으로 꺼져 있어서** `PRAGMA foreign_keys = ON;`을 먼저 실행해야 없는 값 참조가 막힙니다.
+### 4-5. 핵심 SQL 쿼리 15개
 
-#### 데이터 넣는 순서: 부모 먼저
+C단계에서 작성합니다. 쿼리마다 "무엇을 확인하는지" 한 줄 설명을 붙입니다.
 
-rental에 `member_id = 1`을 넣으려면 member에 1번 회원이 **이미 있어야** 합니다.
-
-```sql
-INSERT INTO rental (id, member_id, book_id, rented_at) VALUES (1, 1, 1, '2026-10-01');
--- member, book이 비어 있으면 → Error: FOREIGN KEY constraint failed
-```
-
-- **에러 난 INSERT는 저장되지 않습니다.** 그래서 그 행을 가리키는 뒷줄도 연달아 실패합니다. 에러가 여러 개면 맨 위부터 고칩니다.
-- 여러 줄을 한 번에 넣다가 **한 줄만 틀려도 그 INSERT 문 전체가 취소**됩니다.
-
-### 3. SELECT / INSERT / UPDATE / DELETE는 언제 쓰나
-
-| 명령 | 언제 | 정리한 단계 |
+| 범주 | 필요 개수 | 상태 |
 |---|---|---|
-| `INSERT` | 새 행을 추가할 때 | 4단계 ✅ |
-| `SELECT` | 저장된 데이터를 꺼내 볼 때 | 5-1단계 ✅ |
-| `UPDATE` | 이미 있는 행의 값을 바꿀 때 | 5-5단계 ✅ |
-| `DELETE` | 행 자체를 지울 때 | 5-5단계 ✅ |
+| 기본 조회 (WHERE, ORDER BY, LIMIT) | 4개 이상 | ⬜ |
+| 조인 (INNER 2개 이상, LEFT 1개 이상) | 4개 이상 | ⬜ |
+| 집계 (COUNT, SUM, AVG 중 2개 이상 + GROUP BY) | 3개 이상 | ⬜ |
+| 서브쿼리 | 1개 이상 | ⬜ |
+| 수정 및 삭제 (UPDATE, DELETE) | 2개 이상 | ⬜ |
+| 인덱스 (CREATE INDEX + 이유 1줄) | 1개 이상 | ⬜ |
 
-SELECT만 원본을 바꾸지 않고, 나머지 셋은 원본이 실제로 바뀝니다.
+### 4-6. 결과 확인 자료
 
-**INSERT 읽는 법**
+D단계에서 쿼리마다 실행 결과를 `results/`에 저장합니다.
 
-```sql
-INSERT INTO member (id, name, email, phone)        -- member 표에, 이 순서의 칸으로 넣겠다 (선언)
-VALUES (1, '김철수', 'kim@a.com', '010-1111-1111'); -- 선언한 순서대로 값
-```
+## 5. 보너스 과제
 
-**SELECT 쓰는 순서와 실행 순서는 다릅니다.**
+이번 범위에서는 하지 않습니다. 필수 요구사항에 집중합니다.
 
-```text
-쓰는 순서:  SELECT → FROM → (JOIN … ON) → WHERE → GROUP BY → ORDER BY → LIMIT
-실행 순서:  FROM → (JOIN … ON) → WHERE → GROUP BY → SELECT → ORDER BY → LIMIT
-```
+## 6. 개발 환경
 
-DB는 **어느 표에서(FROM) → 붙이고(JOIN) → 걸러내고(WHERE) → 묶고(GROUP BY) → 칸을 고르고(SELECT) → 정렬하고 → 자릅니다.**
-SQL은 세미콜론(`;`)까지를 **한 문장**으로 끝까지 읽은 뒤 실행하기 때문에, 맨 앞에 쓴 SELECT가 뒤의 JOIN 결과에서 칸을 고를 수 있습니다.
-
-**SELECT 뒤에 쓰는 규칙 5개**
-
-1. 칸은 **쉼표**로 나눈다. 마지막 칸 뒤에는 쉼표를 쓰지 않는다.
-2. **꺼낸 표(FROM, JOIN)의 칸만** 쓸 수 있다. (`FROM rental`에서 `name`을 쓰면 `no such column`)
-3. 같은 이름의 칸이 두 표에 있으면 **`테이블.칸`**으로 쓴다. (`id`만 쓰면 `ambiguous column name`)
-4. GROUP BY를 쓰면 **묶은 기준 칸 + 집계 함수**만 쓴다.
-5. SELECT에 쓴 순서 = 결과 표의 칸 순서.
-
-> 쉼표를 빠뜨려 `SELECT id member_id`처럼 쓰면 에러 없이 "id 칸을 member_id라는 이름으로 보여줘"로 해석됩니다. 조용히 틀린 결과가 나오니 더 위험합니다.
-
-#### UPDATE: 이미 있는 값 바꾸기
-
-```sql
-UPDATE rental                       -- rental 표에서
-SET returned_at = '2026-10-14'      -- returned_at 칸을 이 값으로 바꿔라
-WHERE id = 3;                       -- 단, id가 3인 줄만
-```
-
-#### DELETE: 줄 자체를 지우기
-
-```sql
-DELETE FROM rental WHERE id = 1;
-```
-
-#### WHERE를 빠뜨리면 전체가 바뀐다
-
-`UPDATE rental SET returned_at = '2026-10-14';`는 **모든 줄**을, `DELETE FROM rental;`은 **모든 줄을 삭제**합니다. 에러도 나지 않습니다.
-바꾸기 전에 **같은 WHERE로 SELECT를 먼저** 실행해서 어떤 줄이 바뀔지 확인합니다.
-
-```sql
-SELECT * FROM rental WHERE id = 3;                          -- 1. 먼저 확인
-UPDATE rental SET returned_at = '2026-10-14' WHERE id = 3;  -- 2. 그다음 변경
-```
-
-#### FK가 있으면 자식이 가리키는 부모는 지울 수 없다
-
-![FK와 DELETE](docs/images/fk_delete.svg)
-
-김철수를 지우면 대여 기록 1, 2번이 **존재하지 않는 회원**을 가리키게 되므로 `FOREIGN KEY constraint failed`로 막힙니다.
-INSERT 때 "없는 번호를 새로 적는 것"을 막았던 것과 같은 규칙입니다.
-
-| 작업 | 순서 |
+| 항목 | 사용 |
 |---|---|
-| 넣을 때 (INSERT) | 부모 → 자식 |
-| 지울 때 (DELETE) | **자식 → 부모** |
+| OS | macOS |
+| DB | SQLite 3 (macOS 기본 설치) |
+| 실행 도구 | 터미널 `sqlite3` CLI |
 
-```sql
-DELETE FROM rental WHERE member_id = 1;   -- 1. 자식(대여 기록) 먼저: 선이 사라짐
-DELETE FROM member WHERE id = 1;          -- 2. 이제 부모 삭제 가능
-```
+## 7. 제약 사항
 
-과제의 DELETE 쿼리는 rental 한 줄이나 대여 기록이 없는 회원처럼 **가리키는 자식이 없는 것**을 지우는 게 간단합니다.
-
-### 4. JOIN과 GROUP BY로 연결된 데이터를 한 번에 뽑는 방법
-
-#### JOIN: 번호가 같은 줄끼리 짝지어 새 표를 만든다
-
-```sql
-SELECT rental.id, member.name
-FROM rental
-JOIN member ON rental.member_id = member.id;
-```
-
-| 부분 | 역할 |
+| 제약 | 지킨 방법 |
 |---|---|
-| `FROM rental` | rental 표를 꺼낸다 (기준) |
-| `JOIN member` | member 표도 꺼내고, rental과 붙이겠다고 선언한다 |
-| `ON rental.member_id = member.id` | 이 두 값이 **같은 줄끼리** 붙인다 |
-| `SELECT rental.id, member.name` | 붙인 표에서 이 두 칸만 보여준다 |
+| 백엔드 프레임워크 사용 금지 | SQL 파일 3개만 사용 |
+| 로컬 DB만 사용 | SQLite 파일 DB |
+| 뷰, 프로시저, 트리거 사용 금지 | 사용하지 않음 |
+| 정규화를 과하게 파지 않기 | 테이블 4개, 관계가 자연스럽고 쿼리가 잘 나오는 구조 |
 
-![INNER JOIN 과정](docs/images/inner_join.svg)
+## 8. 결과 예시와 대응
 
-- **ON은 어떤 줄이 남을지**, **SELECT는 어떤 칸을 보여줄지** 정합니다.
-- JOIN은 원본 표를 바꾸지 않습니다. 짝지은 결과를 **새 표에 나란히 옮겨 적을 뿐**입니다.
-- 쓰려는 표는 반드시 **FROM이나 JOIN으로 먼저 꺼내야** 합니다. ON에 `member.id`를 써도 `JOIN member`가 없으면 `no such column` 에러입니다.
-- 두 표에 같은 이름의 칸(`id`)이 있어서 `테이블.컬럼`으로 **어느 표 출신 칸인지** 적습니다. 그냥 `id`라고 쓰면 `ambiguous column name` 에러입니다.
-- ON 안의 `=` 양쪽 순서는 바꿔도 결과가 같습니다.
+과제의 쿼리 예시가 이 DB에서 어떤 쿼리가 될지 미리 정리합니다. C단계에서 구현합니다.
 
-#### INNER JOIN과 LEFT JOIN
-
-| | INNER JOIN (`JOIN`) | LEFT JOIN |
+| 과제 예시 | 이 DB에서 | 쓰는 것 |
 |---|---|---|
-| 짝이 있는 줄 | 남음 | 남음 |
-| **왼쪽(FROM) 표**의 짝 없는 줄 | 버림 | **남김** (오른쪽 칸은 NULL) |
-| 오른쪽 표의 짝 없는 줄 | 버림 | 버림 |
-| 표 순서를 바꾸면 | 결과 같음 | **결과가 달라질 수 있음** |
-
-**LEFT JOIN의 "왼쪽"은 FROM에 쓴 표**입니다. 책이 없는 "과학" 카테고리를 살리려면 category를 FROM에 둡니다.
-
-![LEFT JOIN, category가 왼쪽](docs/images/left_join_category.svg)
-
-표 순서를 반대로 하면 과학은 **오른쪽** 표에 있게 되어 버려집니다. 왼쪽인 book은 4권 모두 짝이 있어서 결과는 INNER JOIN과 같은 4줄입니다.
-
-![LEFT JOIN, book이 왼쪽](docs/images/left_join_book.svg)
-
-**요구사항 읽는 법**: "~가 **없는 ○○도 포함**"이라는 말이 있으면 LEFT JOIN을 쓰고 ○○을 FROM에 둡니다. SELECT에 적는 칸 순서나 문장의 단어 순서와는 관계없습니다.
-
-```sql
--- 대여 기록이 없는 회원도 포함해서 회원 이름과 대여 번호 보기
-SELECT member.name, rental.id
-FROM member
-LEFT JOIN rental ON rental.member_id = member.id;
-
--- 대여 기록이 없는 회원만 보기 (짝이 없어 NULL인 줄만 남김)
-SELECT member.name
-FROM member
-LEFT JOIN rental ON rental.member_id = member.id
-WHERE rental.id IS NULL;
-```
-
-#### GROUP BY: 같은 값끼리 더미를 나누고, 더미마다 계산한다
-
-대여 기록을 카드라고 생각하면, "회원별 대여 횟수"는 **카드를 회원 번호별로 더미를 나누고 더미마다 세는 것**입니다.
-
-```sql
-SELECT member_id, COUNT(*)
-FROM rental
-GROUP BY member_id;
-```
-
-![GROUP BY 카드 더미](docs/images/group_by.svg)
-
-| SQL | 손으로 할 때 |
-|---|---|
-| `GROUP BY member_id` | 회원 번호별로 **더미를 나눈다** |
-| `COUNT(*)` | 더미마다 **몇 장인지 센다** |
-| `SELECT member_id` | 그 더미가 **누구 것인지** 이름표를 같이 보여준다 |
-
-- 결과는 **더미 하나당 한 줄**입니다. 원본 5줄 → 결과 3줄.
-- GROUP BY 없이 `SELECT COUNT(*) FROM rental;`이면 표 전체가 한 덩어리라 **결과 한 줄**(전체 개수)입니다.
-- 옆에 붙는 숫자는 전체 합계가 아니라 **그 더미 안의 줄 수**입니다.
-
-**집계 함수 3개**: 더미 나누기는 셋 다 GROUP BY가 하고, 더미 안에서 하는 일만 다릅니다.
-
-| 함수 | 더미 안에서 하는 일 | 괄호 안 |
-|---|---|---|
-| `COUNT(*)` | 몇 줄인지 **센다** | `*` |
-| `SUM(price)` | **더한다** | 더할 숫자 칸 |
-| `AVG(price)` | **평균**을 낸다 | 평균 낼 숫자 칸 |
-
-```sql
-SELECT category_id, COUNT(*), SUM(price), AVG(price)
-FROM book
-GROUP BY category_id;
-```
-
-| category_id | 더미 안 (가격) | COUNT(*) | SUM(price) | AVG(price) |
-|---|---|---|---|---|
-| 1 | 해리포터 15000, 어린왕자 9000 | 2 | 24000 | 12000 |
-| 2 | 원피스 5000, 슬램덩크 6000 | 2 | 11000 | 5500 |
-| 3 | 코스모스 22000 | 1 | 22000 | 22000 |
-
-SQLite에서 실제로 실행하면 AVG는 `12000.0`처럼 소수점이 붙어서 나옵니다.
-
-**GROUP BY에서 SELECT 주의**: `SELECT title, COUNT(*) ... GROUP BY category_id`처럼 쓰면 1번 더미에 책이 두 권인데 제목을 하나만 보여줘야 합니다.
-다른 DB는 에러지만 **SQLite는 아무 값이나 하나 골라 보여줘서** 조용히 틀린 결과가 나옵니다.
-
-#### JOIN + GROUP BY: 이름을 먼저 붙이고, 묶어서 센다
-
-책 번호 대신 **제목으로** 대여 순위를 보려면, 아는 것 두 개를 이어 붙이면 됩니다.
-
-```sql
-SELECT book.title, COUNT(*)
-FROM rental
-JOIN book ON rental.book_id = book.id    -- 1. 대여 기록마다 제목 붙이기
-GROUP BY book.title                      -- 2. 제목별로 더미 나눠 세기
-ORDER BY COUNT(*) DESC;                  -- 3. 많은 순 = 인기 순위
-```
-
-![JOIN 후 GROUP BY](docs/images/join_group_by.svg)
-
-회원 이름별로 보려면 `book` → `member`, `book_id` → `member_id`, `title` → `name`만 바꿉니다.
-
-### 5. 검색 / 정렬 / 집계 / 랭킹을 SQL로 어떻게 푸나
-
-아래 예시는 `book.price` 기준입니다.
-
-| 요구 | SQL | 예 |
-|---|---|---|
-| 조건 검색 | `WHERE` | `WHERE price >= 10000` |
-| 글자 검색 | `WHERE ... LIKE` | `WHERE title LIKE '%포터%'` |
-| 빈 값 찾기 | `IS NULL` | `WHERE returned_at IS NULL` (아직 반납 안 함) |
-| 정렬 | `ORDER BY ... ASC/DESC` | `ORDER BY price DESC` (큰 것부터) |
-| 개수 제한, 랭킹 | `ORDER BY` + `LIMIT` | `ORDER BY price DESC LIMIT 2` (가장 비싼 2권) |
-| 집계 | `COUNT`, `SUM`, `AVG` + `GROUP BY` | `GROUP BY category_id` (카테고리별 권수, 합계, 평균) |
-| 집계 + 랭킹 | `GROUP BY` + `ORDER BY ... DESC` + `LIMIT` | 가장 많이 대여된 책 TOP 3 |
-| 다른 결과로 거르기 | 서브쿼리 | 대여 기록이 없는 회원 (아래) |
-
-- 빈 값은 `= NULL`로 찾으면 아무것도 안 나옵니다. 반드시 `IS NULL`을 씁니다.
-- `ASC`(작은 것부터)는 기본값이라 생략할 수 있지만, 써두면 의도가 바로 보입니다.
-
-```sql
--- 가격이 10000원 미만인 책을 싼 순서대로 2권
-SELECT title FROM book WHERE price < 10000 ORDER BY price ASC LIMIT 2;
-```
-
-#### 서브쿼리: 질문을 두 번에 나눠서 하기 (🔁 구현 후 다시 보기)
-
-"대여 기록이 없는 회원은?"을 한 번에 답하기 어려우면 질문을 둘로 쪼갭니다.
-
-1. 빌린 적 있는 회원 번호는? → `SELECT member_id FROM rental;` → 1, 1, 2
-2. 회원 중 그 번호에 **없는** 사람은? → `SELECT name FROM member WHERE id NOT IN (1, 1, 2);`
-
-번호를 손으로 옮겨 적는 대신 **1번 질문을 괄호 안에 그대로 넣은 것**이 서브쿼리입니다.
-
-```sql
-SELECT name FROM member
-WHERE id NOT IN (SELECT member_id FROM rental);
-```
-
-![서브쿼리 두 단계](docs/images/subquery.svg)
-
-- **괄호 안을 먼저 실행해서 목록을 만들고**, 바깥 쿼리가 그 목록에 있는지(`IN`) 없는지(`NOT IN`)로 거릅니다.
-- 같은 답을 5-2단계의 `LEFT JOIN ... WHERE rental.id IS NULL`로도 구했습니다.
-
-### 6. 인덱스는 왜 필요하고 어디에 거나
-
-인덱스는 **책 맨 뒤의 찾아보기(색인)**입니다. `WHERE member_id = 1`을 실행할 때 인덱스가 없으면 모든 줄을 처음부터 확인하고, 있으면 값 순서로 정리된 목록에서 바로 찾아갑니다.
-
-![인덱스](docs/images/index.svg)
-
-```sql
-CREATE INDEX idx_rental_member_id ON rental(member_id);
--- 이유: 회원별 대여 조회(WHERE)와 JOIN에서 member_id로 자주 찾기 때문
-```
-
-| 부분 | 뜻 |
-|---|---|
-| `CREATE INDEX` | 찾아보기를 만들어라 |
-| `idx_rental_member_id` | 찾아보기 이름 (보통 `idx_테이블_칸`) |
-| `ON rental(member_id)` | rental 표의 member_id 칸으로 |
-
-**어느 칸에 거나**
-
-| 걸면 좋은 칸 | 이유 |
-|---|---|
-| WHERE에 자주 쓰는 칸 | 그 값으로 자주 찾으니까 |
-| JOIN의 ON에 쓰는 FK 칸 (`rental.member_id`, `rental.book_id`) | JOIN도 결국 "같은 번호 찾기"라서 |
-
-- PK와 UNIQUE 칸은 DB가 **이미 자동으로** 인덱스를 만들어 둡니다.
-- 아무 데나 다 걸면 안 됩니다. 줄을 넣거나 바꿀 때마다 인덱스도 같이 고쳐야 해서 **INSERT, UPDATE가 느려지고** 공간을 차지합니다.
-- 인덱스가 있든 없든 **결과는 똑같고, 찾는 속도만** 달라집니다. 6줄이면 차이가 없지만 100만 줄이면 크게 달라집니다.
+| 대여 중인 책 목록 | `returned_at`이 NULL인 대여 + 책 제목 | JOIN, IS NULL |
+| 회원별 대여 횟수 집계 | 회원 이름별 COUNT | JOIN, GROUP BY |
+| 최근 30일 대여 기록 | 기준일로부터 30일 안의 `rented_at` | WHERE, 날짜 비교 |
+| 연체 상태로 업데이트 | 이 설계에는 상태 칸이 없어 **반납 처리**(`returned_at` 채우기)로 대신함 | UPDATE |
+| 대여 기록이 없는 회원 찾기 | 박민수, 한서윤 | 서브쿼리 (NOT IN) |
