@@ -1,0 +1,7 @@
+# 실행 중 생성되는 DB는 제출 SQL로 다시 만들 수 있습니다.
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+__pycache__/
+.DS_Store
