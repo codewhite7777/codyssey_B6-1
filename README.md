@@ -18,7 +18,7 @@
 
 | 함께 보는 문서 | 내용 |
 |---|---|
-| [docs/evaluation.md](docs/evaluation.md) | 평가 시연 순서, 평가 항목별 답과 보여줄 곳 |
+| [docs/evaluation.md](docs/evaluation.md) | 평가 시연 순서, 평가 질문마다 보여줄 곳(스크린샷)과 말하기 예시 |
 | [results/results.md](results/results.md) | 쿼리 15개의 실제 실행 결과 (텍스트 + 쿼리별 스크린샷 `results/images/`) |
 | [docs/concepts.md](docs/concepts.md) | 과제 목표 6개 개념 정리 (그림 포함) |
 | [docs/practice.md](docs/practice.md) | 확인 문제와 내 답, 헷갈렸던 질문, 구현 검토 기록 |
