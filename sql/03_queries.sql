@@ -11,7 +11,7 @@
 -- [x] 서브쿼리 1개 (Q12)
 -- [x] 수정 및 삭제 2개 (Q13 UPDATE, Q14 DELETE)
 -- [x] 인덱스 1개 (Q15)
--- [ ] 실행 결과를 results/ 폴더에 저장
+-- [x] 실행 결과를 results/ 폴더에 저장 (results/results.md)
 
 PRAGMA foreign_keys = ON;  -- SQLite 전용: FK 검사 켜기
 

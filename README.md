@@ -13,7 +13,7 @@
 | README.md (이 문서) | 과제 순서, 요구사항별 구현 위치와 확인 방법 |
 | [docs/concepts.md](docs/concepts.md) | 과제 목표 6개 개념 정리 (그림 포함) |
 | [docs/practice.md](docs/practice.md) | 확인 문제와 내 답, 헷갈렸던 질문, 구현 검토 기록 |
-| [docs/evaluation.md](docs/evaluation.md) | 피어 평가 항목별 답과 보여줄 곳 |
+| [docs/evaluation.md](docs/evaluation.md) | **평가 진행 순서(시연)**, 평가 항목별 답과 보여줄 곳 |
 
 ## 진행 상황
 
@@ -23,9 +23,9 @@
 |---|---|---|---|
 | A. 스키마 | 테이블 4개의 칸, 타입, PK/FK, NOT NULL/UNIQUE | `sql/01_schema.sql` | ✅ |
 | B. 샘플 데이터 | 테이블마다 10행 이상, 쿼리 결과가 의미 있게 섞기 | `sql/02_data.sql` | ✅ |
-| C. 쿼리 15개 | 조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1 | `sql/03_queries.sql` | 🔍 초안 검토 중 |
-| D. 실행 결과 | 쿼리마다 결과 저장 | `results/` | ⬜ |
-| E. 복습 | 완성된 쿼리로 전체 개념 복습, 서브쿼리 재검토 | `docs/concepts.md` | ⬜ |
+| C. 쿼리 15개 | 조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1 | `sql/03_queries.sql` | ✅ |
+| D. 실행 결과 | 쿼리마다 결과 저장 | `results/results.md` | ✅ |
+| E. 복습 | 평가 전 [evaluation.md](docs/evaluation.md) 기준으로 설명 연습, 서브쿼리(Q12) 재검토 | `docs/evaluation.md` | 🔍 평가 전 |
 
 ---
 
@@ -41,8 +41,8 @@
 | 도메인 DB 1개 (테이블 4개 이상, 1:N 2개 이상) | 도서 대여 DB: 테이블 4개, 1:N 3개 | ✅ |
 | 스키마 생성 스크립트 1개 | [sql/01_schema.sql](sql/01_schema.sql) | ✅ |
 | 샘플 데이터 입력 스크립트 1개 (테이블당 10행 이상) | [sql/02_data.sql](sql/02_data.sql) | ✅ 검토 완료 |
-| 핵심 쿼리 15개 | [sql/03_queries.sql](sql/03_queries.sql) | 🔍 초안 검토 중 |
-| 실행 결과 캡처 폴더 | [results/](results/) | ⬜ |
+| 핵심 쿼리 15개 | [sql/03_queries.sql](sql/03_queries.sql) | ✅ |
+| 실행 결과 캡처 폴더 | [results/results.md](results/results.md) | ✅ |
 | (선택) ERD | [4-2](#4-2-데이터-모델스키마-설계)의 텍스트 관계도로 대체 | ✅ |
 
 ```text
@@ -52,7 +52,8 @@ codyssey_B6-1/
 │   ├── 01_schema.sql    CREATE TABLE (부모 → 자식 순서)
 │   ├── 02_data.sql      INSERT (부모 → 자식 순서)
 │   └── 03_queries.sql   핵심 쿼리 15개
-├── results/             쿼리 실행 결과
+├── results/
+│   └── results.md       쿼리 실행 결과
 └── docs/
     ├── concepts.md      개념 정리
     ├── practice.md      연습과 검토 기록
@@ -162,7 +163,7 @@ member   (1) ──< rental (N)     회원 1명은 여러 번 대여함       re
 
 ### 4-5. 핵심 SQL 쿼리 15개
 
-[sql/03_queries.sql](sql/03_queries.sql)에 쿼리마다 "무엇을 확인하는지" 한 줄 설명을 붙였습니다. (🔍 초안 검토 중)
+[sql/03_queries.sql](sql/03_queries.sql)에 쿼리마다 "무엇을 확인하는지" 한 줄 설명을 붙였습니다.
 
 | 범주 | 필요 개수 | 쿼리 | 무엇을 확인하나 | 결과 |
 |---|---|---|---|---|
@@ -188,7 +189,7 @@ member   (1) ──< rental (N)     회원 1명은 여러 번 대여함       re
 
 ### 4-6. 결과 확인 자료
 
-D단계에서 쿼리마다 실행 결과를 `results/`에 저장합니다.
+[results/results.md](results/results.md)에 쿼리 15개, 확인용 SELECT, 제약조건 확인, 테이블 행 수의 실행 결과를 SQL과 함께 저장했습니다.
 
 ## 5. 보너스 과제
 

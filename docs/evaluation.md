@@ -6,6 +6,44 @@
 
 ---
 
+## 평가 진행 순서 (시연)
+
+평가 자리에서 이 순서대로 보여주면 항목 1~3이 차례로 채워집니다.
+
+| 순서 | 할 것 | 보여주는 평가 항목 |
+|---|---|---|
+| 1 | README 맨 위 **진행 상황**과 **2. 최종 결과물** 표로 제출물 소개 | 항목 1 |
+| 2 | 터미널에서 DB를 새로 만들고 세 파일 실행 (아래 명령) | 항목 1 |
+| 3 | `01_schema.sql`을 열어 테이블 4개, PK, FK 3개, NOT NULL, UNIQUE 설명 | 항목 1, 2 |
+| 4 | README 4-3의 **제약조건 확인 SQL 3개**를 직접 실행해서 막히는 것 시연 | 항목 1, 3 |
+| 5 | `SELECT COUNT(*) FROM 테이블;`로 각 10행 이상 확인 | 항목 1 |
+| 6 | **Q06과 Q08**을 실행해 INNER(12줄)와 LEFT(14줄) 차이 설명 | 항목 3 |
+| 7 | **Q10**을 실행해 GROUP BY와 COUNT, SUM, AVG 설명 | 항목 3 |
+| 8 | **Q11**로 가장 복잡한 쿼리를 단계별 설명 | 항목 4 |
+| 9 | 나머지 쿼리는 [results/results.md](../results/results.md)로 결과 확인 | 항목 1 |
+| 10 | 아래 항목 2~4의 질문에 답변 | 항목 2~4 |
+
+**시연용 명령**
+
+```bash
+rm -f library.db       # 이전 실행 결과 지우기 (Q13, Q14가 데이터를 바꾸므로)
+sqlite3 library.db
+```
+
+```sql
+PRAGMA foreign_keys = ON;
+.mode table
+.headers on
+.nullvalue NULL        -- NULL을 빈칸 대신 NULL로 보이게
+.read sql/01_schema.sql
+.read sql/02_data.sql
+.read sql/03_queries.sql
+```
+
+쿼리 하나만 다시 보고 싶으면 `03_queries.sql`에서 해당 SQL을 복사해 붙여넣으면 됩니다.
+
+---
+
 ## 항목 1. 결과물이 요구사항을 채우는가
 
 | 평가 질문 | 상태 | 보여줄 곳 |
@@ -13,8 +51,8 @@
 | 테이블 4개 이상, 각 테이블에 PK가 있는가? | ✅ | [01_schema.sql](../sql/01_schema.sql), [README 4-2](../README.md#4-2-데이터-모델스키마-설계) |
 | FK 1:N 관계 2개 이상, 없는 값 참조가 실제로 막히는가? | ✅ 1:N 3개 | [README 4-3](../README.md#4-3-제약조건-적용)의 확인 SQL 실행 → `FOREIGN KEY constraint failed` |
 | 각 테이블에 10행 이상 들어 있는가? | ✅ 10 / 10 / 12 / 15행 | [02_data.sql](../sql/02_data.sql), `SELECT COUNT(*) FROM 테이블;` |
-| 쿼리 15개 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | 🔍 초안 (Q01~Q15) | [03_queries.sql](../sql/03_queries.sql) |
-| 쿼리마다 실행 결과가 첨부되어 있는가? | ⬜ D단계 | [results/](../results/) |
+| 쿼리 15개 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | ✅ Q01~Q15 | [03_queries.sql](../sql/03_queries.sql) |
+| 쿼리마다 실행 결과가 첨부되어 있는가? | ✅ | [results/results.md](../results/results.md) |
 
 ---
 
@@ -77,7 +115,7 @@ Q15에서 `rental.member_id`에 걸었습니다.
 
 ### 가장 복잡했던 쿼리와 푸는 과정
 
-C단계 검토 후 확정합니다. 후보는 **Q11 가장 많이 대여된 책 TOP 3**입니다.
+**Q11 가장 많이 대여된 책 TOP 3**입니다. 결과: 해리포터와 마법사의 돌 4회, 해리포터와 비밀의 방 2회, 원피스 1권 2회.
 
 ```sql
 SELECT book.title, COUNT(*)
