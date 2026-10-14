@@ -140,6 +140,8 @@ PRAGMA foreign_keys = ON;   -- SQLite 전용. 접속할 때마다 켜야 FK 검�
 
 ### 4-2. 데이터 모델(스키마) 설계
 
+![스키마](docs/images/schema.svg)
+
 ```text
 category (1) ──< book   (N)     카테고리 1개에 책 여러 권      book.category_id → category.id
 book     (1) ──< rental (N)     책 1권은 여러 번 대여됨         rental.book_id   → book.id
