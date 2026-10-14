@@ -26,6 +26,11 @@
 **시연용 명령**
 
 ```bash
+# 1. 레포 받기 (처음 한 번. 이미 있으면 폴더에서 git pull)
+git clone https://github.com/codewhite7777/codyssey_b6-1.git
+cd codyssey_b6-1
+
+# 2. DB 열기 (sql/ 폴더가 있는 이 위치에서 실행)
 rm -f library.db       # 이전 실행 결과 지우기 (Q13, Q14가 데이터를 바꾸므로)
 sqlite3 library.db
 ```

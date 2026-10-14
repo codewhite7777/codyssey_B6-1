@@ -86,6 +86,13 @@ codyssey_B6-1/
 **실행 방법**
 
 ```bash
+# 1. 레포 받기 (처음 한 번. 이미 있으면 폴더에서 git pull)
+git clone https://github.com/codewhite7777/codyssey_b6-1.git
+cd codyssey_b6-1
+
+# 2. SQLite 확인 후 DB 열기 (sql/ 폴더가 있는 이 위치에서 실행)
+sqlite3 --version
+rm -f library.db       # 이전 실행 결과가 있으면 지우기
 sqlite3 library.db
 ```
 
@@ -93,6 +100,7 @@ sqlite3 library.db
 PRAGMA foreign_keys = ON;   -- SQLite 전용. 접속할 때마다 켜야 FK 검사가 동작함
 .mode table                 -- 결과를 표 모양으로 (점으로 시작하는 건 SQLite 프로그램 명령)
 .headers on
+.nullvalue NULL             -- NULL을 빈칸 대신 NULL로 표시
 .read sql/01_schema.sql
 .read sql/02_data.sql
 .read sql/03_queries.sql
