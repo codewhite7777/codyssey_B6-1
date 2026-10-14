@@ -8,13 +8,13 @@
 
 ## 평가 진행 순서 (시연)
 
-[README의 실행과 확인 흐름](../README.md#실행과-확인-흐름) 1~7단계를 그대로 따라 하면서, 단계마다 아래 평가 질문에 답합니다. 명령과 실제 출력은 README에 있습니다.
+[README의 데이터 설계](../README.md#데이터-설계)로 구조를 먼저 보여주고, [실행과 확인 흐름](../README.md#실행과-확인-흐름) 1~7단계를 그대로 따라 하면서, 단계마다 아래 평가 질문에 답합니다. 명령과 실제 출력은 README에 있습니다.
 
 | 순서 | 할 것 | 답하는 평가 질문 |
 |---|---|---|
-| 1 | README **2. 최종 결과물** 표와 구현 구조 그림으로 제출물 소개 | 항목 1 |
+| 1 | README **데이터 설계**: 컨셉, 스키마 그림, 샘플 데이터 그림으로 왜 이렇게 나눴고 데이터를 어떻게 섞었는지 설명 | 항목 1, 2 |
 | 2 | 흐름 **1~2단계**: 레포 받기, `sqlite3 library.db`, 출력 설정 (`PRAGMA foreign_keys = ON` 이유 설명) | 항목 1 |
-| 3 | 흐름 **3단계**: `.read sql/01_schema.sql` 후 `.tables`, `PRAGMA table_info`, `PRAGMA foreign_key_list`, `PRAGMA index_list`로 테이블 4개, PK, FK 3개, UNIQUE 확인. 스키마 파일 내용은 GitHub나 에디터로 `sql/01_schema.sql`을 열어 설명 | 항목 1, 2 |
+| 3 | 흐름 **3단계**: `.read sql/01_schema.sql` 후 `.tables`로 테이블 4개 확인. PK, FK, 제약조건은 스키마 그림이나 GitHub에서 `sql/01_schema.sql`을 열어 설명 | 항목 1, 2 |
 | 4 | 흐름 **4단계**: `.read sql/02_data.sql` 후 `COUNT(*)`로 10 / 10 / 12 / 15행 확인 | 항목 1 |
 | 5 | 흐름 **5단계**: 규칙을 어기는 INSERT 3개가 `constraint failed`로 막히고, `COUNT(*)`가 0인 것 확인 | 항목 1, 3 |
 | 6 | 흐름 **6단계**: `.echo on` 후 `.read sql/03_queries.sql`. 화면에서 아래 쿼리를 찾아 설명 | 항목 1, 3, 4 |
@@ -33,8 +33,8 @@
 
 | 평가 질문 | 상태 | 보여줄 곳 |
 |---|---|---|
-| 테이블 4개 이상, 각 테이블에 PK가 있는가? | ✅ | [01_schema.sql](../sql/01_schema.sql), [README 흐름 3단계](../README.md#3단계-스키마-만들고-구조-확인하기) |
-| FK 1:N 관계 2개 이상, 없는 값 참조가 실제로 막히는가? | ✅ 1:N 3개 | [README 흐름 3단계](../README.md#3단계-스키마-만들고-구조-확인하기)의 `foreign_key_list`, [5단계](../README.md#5단계-제약조건이-막는지-확인하기) → `FOREIGN KEY constraint failed` |
+| 테이블 4개 이상, 각 테이블에 PK가 있는가? | ✅ | [01_schema.sql](../sql/01_schema.sql), [README 테이블 구조](../README.md#테이블-구조-스키마), [3단계](../README.md#3단계-스키마테이블-4개-만들기) |
+| FK 1:N 관계 2개 이상, 없는 값 참조가 실제로 막히는가? | ✅ 1:N 3개 | [README 테이블 구조](../README.md#테이블-구조-스키마)의 관계 표, [5단계](../README.md#5단계-제약조건이-막는지-확인하기) → `FOREIGN KEY constraint failed` |
 | 각 테이블에 10행 이상 들어 있는가? | ✅ 10 / 10 / 12 / 15행 | [02_data.sql](../sql/02_data.sql), [README 흐름 4단계](../README.md#4단계-샘플-데이터-넣고-행-수-확인하기) |
 | 쿼리 15개 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | ✅ Q01~Q15 | [03_queries.sql](../sql/03_queries.sql), [README 4-5](../README.md#4-5-핵심-sql-쿼리-15개) |
 | 쿼리마다 실행 결과가 첨부되어 있는가? | ✅ | [results/results.md](../results/results.md) |
