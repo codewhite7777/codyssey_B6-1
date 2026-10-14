@@ -44,11 +44,10 @@ ORDER BY rented_at DESC;
 
 -- ===== 조인 =====
 
--- Q05. [INNER JOIN] 지금 대여 중인 책 목록 (누가, 어떤 책을, 언제 빌렸나)
-SELECT member.name, book.title, rental.rented_at
+-- Q05. [INNER JOIN] 지금 대여 중인 책 목록 (반납 안 한 대여의 책 제목)
+SELECT book.title, rental.rented_at
 FROM rental
-JOIN member ON rental.member_id = member.id
-JOIN book   ON rental.book_id = book.id
+JOIN book ON rental.book_id = book.id
 WHERE rental.returned_at IS NULL
 ORDER BY rental.rented_at;
 
@@ -68,7 +67,7 @@ ORDER BY member.id;
 SELECT category.name, book.title
 FROM category
 LEFT JOIN book ON book.category_id = category.id
-ORDER BY category.id, book.id;
+ORDER BY category.id;
 
 
 -- ===== 집계 =====
@@ -129,8 +128,3 @@ FROM member;
 -- Q15. [인덱스] rental.member_id에 인덱스를 만든다
 -- 이유: Q07, Q09, Q12처럼 회원 기준으로 대여 기록을 찾는 JOIN, WHERE에서 member_id로 자주 찾기 때문
 CREATE INDEX idx_rental_member_id ON rental(member_id);
-
--- 확인 (15개에 세지 않음, SQLite 전용): 인덱스가 만들어졌는지 본다
-SELECT name, tbl_name
-FROM sqlite_master
-WHERE type = 'index' AND name = 'idx_rental_member_id';
