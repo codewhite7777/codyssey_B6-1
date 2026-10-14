@@ -62,6 +62,11 @@ rental은 회원과 책을 **연결하는 기록**입니다. 책에 회원 칸�
 | 2 | 이미 있는 테이블을 지운다 (`DROP TABLE`, 자식 → 부모: rental → book → member → category). 몇 번이든 다시 실행할 수 있게 |
 | 3 | 테이블 4개를 만든다 (`CREATE TABLE`, 부모 → 자식: category → member → book → rental). 이때 PK, FK, NOT NULL, UNIQUE를 같이 정한다 |
 
+> **FK 검사를 켜지 않으면?** FK를 적어 둬도 아무것도 막지 않아서 **주인 없는 기록**이 생깁니다.
+> - 없는 999번 회원으로 대여 기록을 넣어도 저장됨
+> - 대여 기록 4건이 있는 김철수(1번)를 지워도 지워짐 → 남은 4건이 없는 회원을 가리킴
+> - 그 뒤 rental은 15건인데 member와 JOIN하면 11건. 에러 없이 집계 결과가 틀림
+
 ![스키마](docs/images/schema.svg)
 
 | 관계 | 실제 의미 | FK (N 쪽이 가짐) |

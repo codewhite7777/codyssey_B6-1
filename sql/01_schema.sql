@@ -16,7 +16,9 @@
 -- [x] 부모 테이블을 먼저 만들기: category → member → book → rental
 -- [x] DB 전용 문법은 주석으로 표시
 
-PRAGMA foreign_keys = ON;  -- SQLite 전용: FK 검사 켜기 (접속할 때마다 필요)
+-- SQLite 전용: FK 검사 켜기. 기본이 꺼짐이고, sqlite3를 새로 열 때마다 다시 꺼짐
+-- 끄면: 없는 회원 번호로 대여가 들어가고, 대여 기록이 있는 회원도 지워져 주인 없는 기록이 생김
+PRAGMA foreign_keys = ON;
 
 -- 다시 실행할 수 있도록 기존 테이블을 지운다.
 -- 지울 때는 자식 → 부모 순서 (만들 때의 반대)
