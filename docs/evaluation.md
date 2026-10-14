@@ -45,6 +45,8 @@ PRAGMA foreign_keys = ON;
 .read sql/03_queries.sql
 ```
 
+명령마다 하는 일은 [README 4-1](../README.md#4-1-db-환경-준비)에 정리했습니다.
+
 쿼리 하나만 다시 보고 싶으면 `03_queries.sql`에서 해당 SQL을 복사해 붙여넣으면 됩니다.
 
 ---

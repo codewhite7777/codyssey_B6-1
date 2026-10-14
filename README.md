@@ -43,7 +43,11 @@
 | 샘플 데이터 입력 스크립트 1개 (테이블당 10행 이상) | [sql/02_data.sql](sql/02_data.sql) | ✅ 검토 완료 |
 | 핵심 쿼리 15개 | [sql/03_queries.sql](sql/03_queries.sql) | ✅ |
 | 실행 결과 캡처 폴더 | [results/results.md](results/results.md) | ✅ |
-| (선택) ERD | [4-2](#4-2-데이터-모델스키마-설계)의 텍스트 관계도로 대체 | ✅ |
+| (선택) ERD | 아래 구현 구조 그림, [4-2](#4-2-데이터-모델스키마-설계)의 관계도 | ✅ |
+
+**구현 구조**: SQL 파일 3개가 `library.db` 안에 테이블 4개를 만들고 데이터를 넣은 뒤, 쿼리 15개의 결과를 `results/results.md`에 남깁니다.
+
+![구현 구조](docs/images/implementation.svg)
 
 ```text
 codyssey_B6-1/
@@ -85,6 +89,10 @@ codyssey_B6-1/
 
 **실행 방법**
 
+![실행 흐름](docs/images/run_flow.svg)
+
+1~2번은 **터미널**(`$`)에서, 3~7번은 `sqlite3`를 실행한 뒤 나오는 **`sqlite>` 프롬프트**에서 입력합니다.
+
 ```bash
 # 1. 레포 받기 (처음 한 번. 이미 있으면 폴더에서 git pull)
 git clone https://github.com/codewhite7777/codyssey_b6-1.git
@@ -107,6 +115,25 @@ PRAGMA foreign_keys = ON;   -- SQLite 전용. 접속할 때마다 켜야 FK 검�
 .quit
 ```
 
+**명령마다 하는 일**
+
+| 단계 | 명령 | 하는 일 |
+|---|---|---|
+| 1 | `git clone 주소` | GitHub의 레포를 내 컴퓨터로 복사 |
+| 1 | `cd codyssey_b6-1` | 레포 폴더로 이동. `.read sql/...`가 **지금 폴더 기준**으로 파일을 찾기 때문에 꼭 필요 |
+| 2 | `sqlite3 --version` | SQLite가 설치돼 있는지 확인 (macOS 기본 설치) |
+| 2 | `rm -f library.db` | 이전에 만든 DB 파일 삭제. Q13, Q14가 데이터를 바꾸므로 깨끗하게 새로 시작 |
+| 2 | `sqlite3 library.db` | SQLite를 실행하고 `library.db` 파일을 연다. 없으면 새로 만든다. 이후 `sqlite>` 프롬프트가 나옴 |
+| 3 | `PRAGMA foreign_keys = ON;` | **FK 검사를 켠다.** SQLite는 기본이 꺼짐. (SQL 파일 3개 맨 위에도 들어 있음) |
+| 3 | `.mode table` | 결과를 테두리 있는 표 모양으로 출력 (안 되면 `.mode column`) |
+| 3 | `.headers on` | 결과 맨 위에 칸 이름을 표시 |
+| 3 | `.nullvalue NULL` | NULL 값을 빈칸 대신 `NULL` 글자로 표시 |
+| 4 | `.read sql/01_schema.sql` | 파일 안의 SQL을 위에서부터 차례로 실행 → 테이블 4개 생성 |
+| 5 | `.read sql/02_data.sql` | 샘플 데이터 입력 |
+| 6 | `.read sql/03_queries.sql` | 쿼리 15개를 실행하고 결과 표를 화면에 출력 |
+| 7 | `.quit` | SQLite를 끝내고 터미널로 돌아감 |
+
+- **점(`.`)으로 시작하는 명령**은 SQL이 아니라 `sqlite3` 프로그램 자체의 명령이라 세미콜론(`;`)이 필요 없습니다.
 - `01_schema.sql`은 맨 앞에서 기존 테이블을 지우고(`DROP TABLE IF EXISTS`) 새로 만들어서 **몇 번이든 다시 실행**할 수 있습니다.
 - `library.db`는 SQL 파일로 언제든 다시 만들 수 있어 레포에 올리지 않습니다 (`.gitignore`).
 - DB 전용 문법(`PRAGMA` 등)은 SQL 파일에 주석으로 표시했습니다.
