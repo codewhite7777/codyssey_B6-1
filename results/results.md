@@ -2,7 +2,7 @@
 
 [README 실행과 확인 흐름](../README.md#실행과-확인-흐름) 2~4단계(스키마, 데이터)를 마친 DB에서 `sql/03_queries.sql`을 위에서부터 차례로 실행한 **sqlite3 3.45.1의 출력 그대로**입니다.
 표 모양만 GitHub에서 보이도록 `.mode markdown`으로 출력했고 (README의 `.mode table`과 값은 같음), NULL은 `.nullvalue NULL`로 표시했습니다.
-쿼리마다 **실행 화면 스크린샷**(README와 같은 `.mode table` 출력)도 [results/images/](images/)에 `q01.png` ~ `q15.png`로 첨부했습니다. 한글 칸은 sqlite3가 글자 수로 칸을 맞춰서 표 테두리가 조금 어긋나 보입니다 (값은 같음).
+쿼리마다 **실행 화면 스크린샷**도 [results/images/](images/)에 `q01.png` ~ `q15.png`로 첨부했습니다. macOS 터미널에서 README 2~4단계(`.mode table`)를 마친 뒤 Q01부터 차례로 실행하고 터미널 창을 찍은 것입니다. 한글 칸은 sqlite3가 글자 수로 칸을 맞춰서 표 테두리가 조금 어긋나 보이고, Q06, Q08은 같은 분류 안의 책 순서만 텍스트 결과와 다를 수 있습니다 (값은 같음).
 
 | 범주 | 쿼리 |
 |---|---|
