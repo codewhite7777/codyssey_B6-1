@@ -243,6 +243,7 @@ SELECT COUNT(*) FROM rental WHERE id = 99;
 
 **결과**: 화면에 `-- Q01. ...` 설명, SQL, 결과 표가 Q15까지 차례로 나옵니다. 결과는 [results/results.md](results/results.md)와 같아야 합니다.
 
+- **값은 같아도 줄 순서가 다를 수 있습니다.** 같은 카테고리 안의 책 순서(Q06, Q08)나 동점끼리의 순서(Q09, Q11)는 `ORDER BY`로 정하지 않아서, SQLite 버전에 따라 results.md와 순서만 다르게 나올 수 있습니다.
 - Q13(UPDATE), Q14(DELETE), Q15(CREATE INDEX)는 결과 표가 없습니다. 바로 아래의 **확인용 SELECT/PRAGMA**(15개에 세지 않음)가 바뀐 결과를 보여줍니다.
 - 쿼리 하나만 다시 보고 싶으면 `sql/03_queries.sql`에서 그 SQL을 복사해 `sqlite>`에 붙여넣습니다. 단, Q13, Q14 실행 뒤에는 데이터가 바뀌어 있습니다 (예: 한서윤 삭제). 처음 상태로 보려면 7단계 후 2단계부터 다시 합니다.
 

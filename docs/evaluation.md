@@ -14,7 +14,7 @@
 |---|---|---|
 | 1 | README **2. 최종 결과물** 표와 구현 구조 그림으로 제출물 소개 | 항목 1 |
 | 2 | 흐름 **1~2단계**: 레포 받기, `sqlite3 library.db`, 출력 설정 (`PRAGMA foreign_keys = ON` 이유 설명) | 항목 1 |
-| 3 | 흐름 **3단계**: `.read sql/01_schema.sql` 후 `.tables`, `PRAGMA table_info`, `PRAGMA foreign_key_list`로 테이블 4개, PK, FK 3개 확인. 스키마 파일 내용은 GitHub나 에디터로 `sql/01_schema.sql`을 열어 설명 | 항목 1, 2 |
+| 3 | 흐름 **3단계**: `.read sql/01_schema.sql` 후 `.tables`, `PRAGMA table_info`, `PRAGMA foreign_key_list`, `PRAGMA index_list`로 테이블 4개, PK, FK 3개, UNIQUE 확인. 스키마 파일 내용은 GitHub나 에디터로 `sql/01_schema.sql`을 열어 설명 | 항목 1, 2 |
 | 4 | 흐름 **4단계**: `.read sql/02_data.sql` 후 `COUNT(*)`로 10 / 10 / 12 / 15행 확인 | 항목 1 |
 | 5 | 흐름 **5단계**: 규칙을 어기는 INSERT 3개가 `constraint failed`로 막히고, `COUNT(*)`가 0인 것 확인 | 항목 1, 3 |
 | 6 | 흐름 **6단계**: `.echo on` 후 `.read sql/03_queries.sql`. 화면에서 아래 쿼리를 찾아 설명 | 항목 1, 3, 4 |
@@ -119,6 +119,8 @@ LIMIT 3;
 5. `LIMIT 3` → 위에서 3개만
 
 2위가 2회로 동점(해리포터와 비밀의 방, 원피스 1권)이라, 동점끼리의 순서는 SQL이 정해 주지 않습니다. 순서까지 정하려면 `ORDER BY`에 기준을 더 적어야 합니다.
+
+**예상 질문**: "제목이 같은 책이 있으면 `GROUP BY book.title`은 어떻게 되나요?" → 두 책이 한 더미로 합쳐져서 틀린 결과가 됩니다. 이번 데이터에는 같은 제목(같은 이름의 회원)이 없어서 문제없지만, 정확히 하려면 PK인 `book.id`로 묶어야 합니다. Q09의 `GROUP BY member.name`도 같습니다.
 
 ### 가장 어려웠던 부분과 해결 방법
 
