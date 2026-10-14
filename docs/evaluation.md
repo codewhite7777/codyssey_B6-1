@@ -37,7 +37,7 @@
 | FK 1:N 관계 2개 이상, 없는 값 참조가 실제로 막히는가? | ✅ 1:N 3개 | [README 테이블 구조](../README.md#테이블-구조-스키마)의 관계 표, [5단계](../README.md#5단계-제약조건이-막는지-확인하기) → `FOREIGN KEY constraint failed` |
 | 각 테이블에 10행 이상 들어 있는가? | ✅ 10 / 10 / 12 / 15행 | [02_data.sql](../sql/02_data.sql), [README 흐름 4단계](../README.md#4단계-샘플-데이터-넣고-행-수-확인하기) |
 | 쿼리 15개 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | ✅ Q01~Q15 | [03_queries.sql](../sql/03_queries.sql), [README 4-5](../README.md#4-5-핵심-sql-쿼리-15개) |
-| 쿼리마다 실행 결과가 첨부되어 있는가? | ✅ | [results/results.md](../results/results.md) |
+| 쿼리마다 실행 결과가 첨부되어 있는가? | ✅ 텍스트 + 스크린샷 | [results/results.md](../results/results.md) (쿼리마다 결과 표와 실행 화면), [results/images/](../results/images/) (q01~q15.png) |
 
 ---
 

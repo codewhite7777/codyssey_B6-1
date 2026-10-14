@@ -19,7 +19,7 @@
 | 함께 보는 문서 | 내용 |
 |---|---|
 | [docs/evaluation.md](docs/evaluation.md) | 평가 시연 순서, 평가 항목별 답과 보여줄 곳 |
-| [results/results.md](results/results.md) | 쿼리 15개의 실제 실행 결과 |
+| [results/results.md](results/results.md) | 쿼리 15개의 실제 실행 결과 (텍스트 + 쿼리별 스크린샷 `results/images/`) |
 | [docs/concepts.md](docs/concepts.md) | 과제 목표 6개 개념 정리 (그림 포함) |
 | [docs/practice.md](docs/practice.md) | 확인 문제와 내 답, 헷갈렸던 질문, 구현 검토 기록 |
 
@@ -30,7 +30,7 @@
 | A. 스키마 | 테이블 4개의 칸, 타입, PK/FK, NOT NULL/UNIQUE | `sql/01_schema.sql` | ✅ |
 | B. 샘플 데이터 | 테이블마다 10행 이상, 쿼리 결과가 의미 있게 섞기 | `sql/02_data.sql` | ✅ |
 | C. 쿼리 15개 | 조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1 | `sql/03_queries.sql` | ✅ |
-| D. 실행 결과 | 쿼리마다 결과 저장 | `results/results.md` | ✅ |
+| D. 실행 결과 | 쿼리마다 결과 저장 | `results/results.md`, `results/images/` | ✅ |
 | E. 개념 복습 | 평가 직전 마지막으로 개념 복습 (서브쿼리 Q12 포함) | `docs/concepts.md` | ⬜ 평가 직전 |
 
 ---
@@ -316,7 +316,7 @@ SELECT COUNT(*) FROM rental WHERE id = 99;
 | 스키마 생성 스크립트 1개 | [sql/01_schema.sql](sql/01_schema.sql) | ✅ |
 | 샘플 데이터 입력 스크립트 1개 (테이블당 10행 이상) | [sql/02_data.sql](sql/02_data.sql) | ✅ |
 | 핵심 쿼리 15개 | [sql/03_queries.sql](sql/03_queries.sql) | ✅ |
-| 실행 결과 캡처 폴더 | [results/results.md](results/results.md) | ✅ |
+| 실행 결과 캡처 폴더 | [results/results.md](results/results.md) (텍스트), [results/images/](results/images/) (스크린샷 q01~q15.png) | ✅ |
 | (선택) ERD | [테이블 구조](#테이블-구조-스키마) 그림, 아래 구현 구조 그림 | ✅ |
 
 ![구현 구조](docs/images/implementation.svg)
@@ -329,7 +329,8 @@ codyssey_b6-1/
 │   ├── 02_data.sql      INSERT (부모 → 자식 순서)
 │   └── 03_queries.sql   핵심 쿼리 15개
 ├── results/
-│   └── results.md       쿼리 실행 결과
+│   ├── results.md       쿼리 실행 결과 (텍스트, 스크린샷 링크)
+│   └── images/          쿼리별 실행 화면 스크린샷 q01.png ~ q15.png
 └── docs/
     ├── evaluation.md    평가 준비
     ├── concepts.md      개념 정리
@@ -453,7 +454,7 @@ Q12(서브쿼리): 괄호 안 `SELECT member_id FROM rental`로 **빌린 적 있
 
 #### 4-6. 결과 확인 자료
 
-[results/results.md](results/results.md)에 쿼리 15개와 확인용 SELECT/PRAGMA의 결과를 sqlite3로 실행한 출력 그대로 SQL과 함께 저장했습니다.
+[results/results.md](results/results.md)에 쿼리 15개와 확인용 SELECT/PRAGMA의 결과를 sqlite3로 실행한 출력 그대로 SQL과 함께 저장했습니다. 쿼리마다 실행 화면 스크린샷도 [results/images/](results/images/)에 넣고 results.md의 각 쿼리 아래에 붙였습니다.
 
 ### 5. 보너스 과제
 

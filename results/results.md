@@ -2,6 +2,7 @@
 
 [README 실행과 확인 흐름](../README.md#실행과-확인-흐름) 2~4단계(스키마, 데이터)를 마친 DB에서 `sql/03_queries.sql`을 위에서부터 차례로 실행한 **sqlite3 3.45.1의 출력 그대로**입니다.
 표 모양만 GitHub에서 보이도록 `.mode markdown`으로 출력했고 (README의 `.mode table`과 값은 같음), NULL은 `.nullvalue NULL`로 표시했습니다.
+쿼리마다 **실행 화면 스크린샷**(README와 같은 `.mode table` 출력)도 [results/images/](images/)에 `q01.png` ~ `q15.png`로 첨부했습니다. 한글 칸은 sqlite3가 글자 수로 칸을 맞춰서 표 테두리가 조금 어긋나 보입니다 (값은 같음).
 
 | 범주 | 쿼리 |
 |---|---|
@@ -37,6 +38,10 @@ ORDER BY price DESC;
 
 → 8줄
 
+**실행 화면**
+
+![Q01 실행 화면](images/q01.png)
+
 <a id="q02"></a>
 ## Q02. [기본 조회] 제목에 "해리포터"가 들어간 책을 찾는다
 
@@ -52,6 +57,10 @@ WHERE title LIKE '%해리포터%';
 | 해리포터와 비밀의 방  | 16000 |
 
 → 2줄
+
+**실행 화면**
+
+![Q02 실행 화면](images/q02.png)
 
 <a id="q03"></a>
 ## Q03. [기본 조회] 가장 비싼 책 TOP 3를 본다
@@ -70,6 +79,10 @@ LIMIT 3;
 | 코스모스    | 22000 |
 
 → 3줄
+
+**실행 화면**
+
+![Q03 실행 화면](images/q03.png)
 
 <a id="q04"></a>
 ## Q04. [기본 조회] 최근 30일(2026-09-14 ~ 2026-10-14) 대여 기록을 최신순으로 본다
@@ -96,6 +109,10 @@ ORDER BY rented_at DESC;
 
 → 10줄
 
+**실행 화면**
+
+![Q04 실행 화면](images/q04.png)
+
 <a id="q05"></a>
 ## Q05. [INNER JOIN] 지금 대여 중인 책 목록 (반납 안 한 대여의 책 제목)
 
@@ -115,6 +132,10 @@ ORDER BY rental.rented_at;
 | 해리포터와 비밀의 방  | 2026-10-12 |
 
 → 4줄
+
+**실행 화면**
+
+![Q05 실행 화면](images/q05.png)
 
 <a id="q06"></a>
 ## Q06. [INNER JOIN] 카테고리별 책을 본다 (책이 있는 카테고리만. Q08과 LEFT 한 단어만 다름)
@@ -142,6 +163,10 @@ ORDER BY category.id;
 | IT   | SQL 첫걸음      |
 
 → 12줄
+
+**실행 화면**
+
+![Q06 실행 화면](images/q06.png)
 
 <a id="q07"></a>
 ## Q07. [LEFT JOIN] 대여 기록이 없는 회원도 포함해서 회원별 대여 번호를 본다
@@ -175,6 +200,10 @@ ORDER BY member.id;
 
 → 17줄
 
+**실행 화면**
+
+![Q07 실행 화면](images/q07.png)
+
 <a id="q08"></a>
 ## Q08. [LEFT JOIN] 책이 없는 카테고리도 포함해서 카테고리별 책을 본다 (Q06과 비교: 12줄 → 14줄)
 
@@ -204,6 +233,10 @@ ORDER BY category.id;
 
 → 14줄
 
+**실행 화면**
+
+![Q08 실행 화면](images/q08.png)
+
 <a id="q09"></a>
 ## Q09. [집계] 회원별 대여 횟수를 많은 순으로 본다
 
@@ -228,6 +261,10 @@ ORDER BY COUNT(*) DESC;
 
 → 8줄
 
+**실행 화면**
+
+![Q09 실행 화면](images/q09.png)
+
 <a id="q10"></a>
 ## Q10. [집계] 카테고리별 책 수, 가격 합계, 평균 가격을 본다
 
@@ -251,6 +288,10 @@ GROUP BY category.name;
 
 → 8줄
 
+**실행 화면**
+
+![Q10 실행 화면](images/q10.png)
+
 <a id="q11"></a>
 ## Q11. [집계] 가장 많이 대여된 책 TOP 3를 본다
 
@@ -271,6 +312,10 @@ LIMIT 3;
 
 → 3줄
 
+**실행 화면**
+
+![Q11 실행 화면](images/q11.png)
+
 <a id="q12"></a>
 ## Q12. [서브쿼리] 대여 기록이 한 번도 없는 회원을 찾는다
 
@@ -286,6 +331,10 @@ WHERE id NOT IN (SELECT member_id FROM rental);
 | 한서윤  |
 
 → 2줄
+
+**실행 화면**
+
+![Q12 실행 화면](images/q12.png)
 
 <a id="q13"></a>
 ## Q13. [UPDATE] 15번 대여를 오늘(2026-10-14) 반납 처리한다
@@ -311,6 +360,10 @@ WHERE id = 15;
 | 15 | 2026-10-12 | 2026-10-14  |
 
 → 1줄
+
+**실행 화면**
+
+![Q13 실행 화면](images/q13.png)
 
 <a id="q14"></a>
 ## Q14. [DELETE] 대여 기록이 없는 회원 한서윤(9번)을 삭제한다 (가리키는 자식이 없어 FK에 막히지 않음)
@@ -343,6 +396,10 @@ FROM member;
 
 → 9줄
 
+**실행 화면**
+
+![Q14 실행 화면](images/q14.png)
+
 <a id="q15"></a>
 ## Q15. [인덱스] rental.member_id에 인덱스를 만든다
 
@@ -365,3 +422,7 @@ PRAGMA index_list(rental);
 | 0   | idx_rental_member_id | 0      | c      | 0       |
 
 → 1줄
+
+**실행 화면**
+
+![Q15 실행 화면](images/q15.png)
