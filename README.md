@@ -165,6 +165,52 @@ member   (1) ──< rental (N)     회원 1명은 여러 번 대여함       re
 | 컬럼 타입을 의미에 맞게 | ✅ 글자 TEXT, 숫자 INTEGER, 날짜 DATE (`book.price`는 정렬, 비교, SUM/AVG를 위해 INTEGER) |
 | 이름이 역할을 드러내게 | ✅ `member_id`, `rented_at`, `returned_at` 등 |
 
+#### DB 안에서 직접 확인하기
+
+위 그림과 표가 실제 DB에 그대로 만들어졌는지, `01_schema.sql`을 실행한 뒤 `sqlite>` 프롬프트에서 아래 명령으로 확인합니다. (모두 SQLite 전용 명령)
+
+| 명령 | 확인하는 것 |
+|---|---|
+| `.tables` | 테이블 목록 → `book  category  member  rental` (4개) |
+| `.schema book` | 그 테이블을 만든 `CREATE TABLE` 문장 그대로 |
+| `PRAGMA table_info(book);` | 칸 이름, 타입, NOT NULL 여부, PK 여부 |
+| `PRAGMA foreign_key_list(rental);` | FK가 어느 칸에서 어느 테이블의 어느 칸을 가리키는지 |
+| `PRAGMA index_list(member);` | UNIQUE가 걸려 있는지 (UNIQUE를 걸면 DB가 자동으로 인덱스를 만듦) |
+| `PRAGMA foreign_keys;` | FK 검사가 켜져 있는지 (`1`이면 켜짐) |
+
+**`PRAGMA table_info(rental);` 실제 결과**
+
+| cid | name | type | notnull | dflt_value | pk |
+|---|---|---|---|---|---|
+| 0 | id | INTEGER | 0 | NULL | **1** |
+| 1 | member_id | INTEGER | **1** | NULL | 0 |
+| 2 | book_id | INTEGER | **1** | NULL | 0 |
+| 3 | rented_at | DATE | **1** | NULL | 0 |
+| 4 | returned_at | DATE | **0** | NULL | 0 |
+
+- `type` = 칸의 타입, `notnull` = 1이면 NOT NULL, `pk` = 1이면 PK
+- `returned_at`만 `notnull`이 0 → NULL 허용(대여 중)이 설계대로 들어감
+- PK인 `id`는 `notnull`이 0으로 나오지만, `INTEGER PRIMARY KEY`는 비워서 넣으면 DB가 번호를 자동으로 채워서 실제로 비어 있을 수 없음
+
+**`PRAGMA foreign_key_list(rental);` 실제 결과**
+
+| id | seq | table | from | to | on_update | on_delete | match |
+|---|---|---|---|---|---|---|---|
+| 0 | 0 | book | book_id | id | NO ACTION | NO ACTION | NONE |
+| 1 | 0 | member | member_id | id | NO ACTION | NO ACTION | NONE |
+
+- `from` 칸이 `table`의 `to` 칸을 가리킨다는 뜻 → `rental.book_id → book.id`, `rental.member_id → member.id`
+- `PRAGMA foreign_key_list(book);`을 하면 `book.category_id → category.id` 한 줄이 나옴. 합쳐서 FK 3개
+
+**`PRAGMA index_list(member);` 실제 결과**
+
+| seq | name | unique | origin | partial |
+|---|---|---|---|---|
+| 0 | sqlite_autoindex_member_1 | 1 | u | 0 |
+
+- `unique`가 1, `origin`이 `u`(UNIQUE에서 생김) → `PRAGMA index_info('sqlite_autoindex_member_1');`로 보면 `email` 칸에 걸려 있음
+- category에도 같은 방식으로 `name`에 UNIQUE 인덱스가 있음
+
 ### 4-3. 제약조건 적용
 
 아래 SQL은 모두 **막혀야 정상**입니다. 스키마와 데이터를 넣은 뒤 실행해서 확인합니다.
