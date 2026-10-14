@@ -221,6 +221,52 @@ member   (1) ──< rental (N)     회원 1명은 여러 번 대여함       re
 | UNIQUE 1개 이상 | `member.email`, `category.name` | `INSERT INTO member (id, name, email) VALUES (99, '홍길동', 'member01@example.com');` | `UNIQUE constraint failed` |
 | FK가 실제로 동작 | `PRAGMA foreign_keys = ON` + `REFERENCES` | `INSERT INTO rental (id, member_id, book_id, rented_at) VALUES (99, 999, 1, '2026-10-14');` | `FOREIGN KEY constraint failed` |
 
+#### 확인하는 순서
+
+**1. 스키마와 데이터를 넣은 상태로 만든다** (터미널 → `sqlite>`)
+
+```bash
+rm -f library.db
+sqlite3 library.db
+```
+
+```sql
+PRAGMA foreign_keys = ON;      -- FK 검사 켜기 (꺼져 있으면 3번째 확인이 막히지 않음)
+.headers on
+.read sql/01_schema.sql        -- 테이블 4개 생성
+.read sql/02_data.sql          -- 샘플 데이터 입력
+```
+
+`.read sql/03_queries.sql`까지 실행한 뒤에 확인해도 됩니다. `.quit` **전에**, 같은 `sqlite>` 안에서 이어서 합니다.
+
+**2. 확인 SQL을 한 줄씩 붙여넣는다**
+
+```text
+sqlite> INSERT INTO member (id, name, email) VALUES (99, NULL, 'x@example.com');
+Runtime error: NOT NULL constraint failed: member.name (19)
+
+sqlite> INSERT INTO member (id, name, email) VALUES (99, '홍길동', 'member01@example.com');
+Runtime error: UNIQUE constraint failed: member.email (19)
+
+sqlite> INSERT INTO rental (id, member_id, book_id, rented_at) VALUES (99, 999, 1, '2026-10-14');
+Runtime error: FOREIGN KEY constraint failed (19)
+```
+
+SQLite 버전에 따라 앞부분이 `Error:`로 나올 수 있습니다. **`... constraint failed`가 보이면 막힌 것**입니다.
+
+**3. 정말 저장되지 않았는지 확인한다**
+
+```sql
+SELECT COUNT(*) FROM member WHERE id = 99;   -- 0 → 1, 2번째 INSERT는 저장 안 됨
+SELECT COUNT(*) FROM rental WHERE id = 99;   -- 0 → 3번째 INSERT는 저장 안 됨
+```
+
+| 확인 | 막은 것 | 이유 |
+|---|---|---|
+| 1번째 | 이름 없는 회원 | `member.name`이 NOT NULL |
+| 2번째 | 이미 있는 이메일(`member01@example.com`) | `member.email`이 UNIQUE |
+| 3번째 | 없는 회원 999번의 대여 기록 | `rental.member_id`가 `member.id`를 가리키는 FK인데 999번 회원이 없음 |
+
 ### 4-4. 샘플 데이터 준비
 
 | 테이블 | 행 수 | 넣는 순서 |
