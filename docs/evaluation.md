@@ -1,6 +1,6 @@
 # 피어 평가 준비
 
-평가 항목마다 **무엇을 보여주고, 어떻게 답할지**를 정리합니다. 쿼리 번호(Q01~Q15)는 C단계에서 쿼리를 완성하면 채웁니다.
+평가 항목마다 **무엇을 보여주고, 어떻게 답할지**를 정리합니다. 쿼리 번호(Q01~Q15)는 [03_queries.sql](../sql/03_queries.sql) 기준입니다.
 
 [← README](../README.md) · [개념 정리](concepts.md) · [연습 기록](practice.md)
 
@@ -13,7 +13,7 @@
 | 테이블 4개 이상, 각 테이블에 PK가 있는가? | ✅ | [01_schema.sql](../sql/01_schema.sql), [README 4-2](../README.md#4-2-데이터-모델스키마-설계) |
 | FK 1:N 관계 2개 이상, 없는 값 참조가 실제로 막히는가? | ✅ 1:N 3개 | [README 4-3](../README.md#4-3-제약조건-적용)의 확인 SQL 실행 → `FOREIGN KEY constraint failed` |
 | 각 테이블에 10행 이상 들어 있는가? | ✅ 10 / 10 / 12 / 15행 | [02_data.sql](../sql/02_data.sql), `SELECT COUNT(*) FROM 테이블;` |
-| 쿼리 15개 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | ⬜ C단계 | [03_queries.sql](../sql/03_queries.sql) |
+| 쿼리 15개 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | 🔍 초안 (Q01~Q15) | [03_queries.sql](../sql/03_queries.sql) |
 | 쿼리마다 실행 결과가 첨부되어 있는가? | ⬜ D단계 | [results/](../results/) |
 
 ---
@@ -54,9 +54,9 @@ FK는 항상 N 쪽에 둡니다. (`book.category_id`, `rental.member_id`, `renta
 
 ### 인덱스는 어디에 걸었고 왜 그 칸인가?
 
-C단계에서 확정합니다. 후보는 `rental.member_id`입니다.
+Q15에서 `rental.member_id`에 걸었습니다.
 
-- "회원별 대여 기록" 조회(WHERE)와 rental-member JOIN에서 **이 칸으로 자주 찾기** 때문
+- Q07, Q09, Q12처럼 **회원 기준으로 대여 기록을 찾는** JOIN, WHERE에서 이 칸으로 자주 찾기 때문
 - PK인 `id`는 이미 자동으로 인덱스가 있어서 따로 걸 필요 없음
 - 아무 데나 걸지 않는 이유: 넣고 바꿀 때마다 인덱스도 고쳐야 해서 INSERT, UPDATE가 느려짐
 
@@ -68,8 +68,8 @@ C단계에서 확정합니다. 후보는 `rental.member_id`입니다.
 |---|---|---|
 | DB와 엑셀의 차이, 왜 나눠 저장하나 | 엑셀 한 시트 예시 vs 4개 테이블. 없는 회원 번호를 넣으면 DB는 막음 (README 4-3) | [개념 1](concepts.md#1-db는-엑셀과-뭐가-다른가-왜-테이블로-나눠-저장하나) |
 | PK와 FK 구분, 1:N 연결을 내 스키마로 | PK = 내 번호(`member.id`), FK = 남의 번호(`rental.member_id`). 김철수 1명 → 대여 4건 | [개념 2](concepts.md#2-pk--fk--1n-관계는-데이터를-어떻게-연결하나) |
-| INNER JOIN과 LEFT JOIN 차이를 결과로 | 같은 member-rental을 INNER(박민수, 한서윤 없음)와 LEFT(둘이 NULL로 남음)로 실행해 비교. 쿼리 번호 C단계에서 | [개념 4](concepts.md#4-join과-group-by로-연결된-데이터를-한-번에-뽑는-방법) |
-| GROUP BY와 COUNT, SUM, AVG 동작을 결과로 | 카테고리별 권수, 가격 합계, 평균 결과를 보며 "같은 값끼리 더미 → 더미마다 계산". 쿼리 번호 C단계에서 | [개념 4](concepts.md#4-join과-group-by로-연결된-데이터를-한-번에-뽑는-방법) |
+| INNER JOIN과 LEFT JOIN 차이를 결과로 | **Q06(INNER, 12줄)과 Q08(LEFT, 14줄)** 비교: 같은 book-category인데 LEFT에만 시집, 요리가 NULL로 남음. Q07에서는 박민수, 한서윤이 NULL | [개념 4](concepts.md#4-join과-group-by로-연결된-데이터를-한-번에-뽑는-방법) |
+| GROUP BY와 COUNT, SUM, AVG 동작을 결과로 | **Q10**: 카테고리별 권수, 가격 합계, 평균을 보며 "같은 값끼리 더미 → 더미마다 계산". **Q09**: 회원별 COUNT | [개념 4](concepts.md#4-join과-group-by로-연결된-데이터를-한-번에-뽑는-방법) |
 
 ---
 
@@ -77,20 +77,22 @@ C단계에서 확정합니다. 후보는 `rental.member_id`입니다.
 
 ### 가장 복잡했던 쿼리와 푸는 과정
 
-C단계에서 확정합니다. 후보는 **책 제목별 대여 횟수 순위**입니다.
+C단계 검토 후 확정합니다. 후보는 **Q11 가장 많이 대여된 책 TOP 3**입니다.
 
 ```sql
 SELECT book.title, COUNT(*)
 FROM rental
 JOIN book ON rental.book_id = book.id
 GROUP BY book.title
-ORDER BY COUNT(*) DESC;
+ORDER BY COUNT(*) DESC
+LIMIT 3;
 ```
 
 1. `FROM rental JOIN book ON ...` → 대여 기록마다 책 제목을 붙인 표를 만든다
 2. `GROUP BY book.title` → 제목이 같은 줄끼리 더미를 나눈다
 3. `COUNT(*)` → 더미마다 센다
 4. `ORDER BY COUNT(*) DESC` → 많은 순으로 정렬
+5. `LIMIT 3` → 위에서 3개만
 
 ### 가장 어려웠던 부분과 해결 방법
 
