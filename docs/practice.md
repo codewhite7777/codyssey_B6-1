@@ -202,6 +202,23 @@ LEFT JOIN 처리 과정을 처음부터 다시 복습한 뒤 풀었다.
 | JOIN은 두 표를 새 사본으로 붙여 매칭한 뒤 보여주는 건가? | 맞다. 원본은 그대로, 짝지은 줄을 새 표에 붙이고, SELECT가 그중 칸을 고른다 |
 | "결과 줄 수"는 무슨 뜻인가? | 결과 표의 데이터 줄(행) 개수. 헤더는 세지 않는다 |
 | SQLite에서 NULL이 안 보이는데? | 터미널은 NULL을 빈칸으로 보여줌. `.nullvalue NULL`을 실행하면 NULL로 표시됨 |
+| `rental.id`는 뭔가? | rental 테이블의 id 필드 = **대여 번호**. LEFT JOIN 결과에서 이 값이 NULL이면 "대여 기록이 붙지 않은 회원" |
+
+**검토 질문 2**: 박민수, 한서윤을 rental에 일부러 넣지 않은 이유는?
+
+```sql
+SELECT member.name, rental.id
+FROM member
+LEFT JOIN rental ON rental.member_id = member.id
+WHERE rental.id IS NULL;
+```
+
+| 문제 | 내 답 | 결과 |
+|---|---|---|
+| 결과는? | 박민수 NULL, 한서윤 NULL | ✅ |
+| 모든 회원이 한 번 이상 빌렸다면? | (설명 들음) | **0줄**. NULL인 줄이 없어서 쿼리가 맞는지 결과로 확인할 수 없음 |
+
+**배운 점**: 샘플 데이터에는 **쿼리에 걸리는 것과 안 걸리는 것이 둘 다** 있어야 쿼리가 제대로 동작하는지 결과로 보여줄 수 있다.
 
 ---
 

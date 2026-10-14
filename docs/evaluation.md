@@ -12,7 +12,7 @@
 |---|---|---|
 | 테이블 4개 이상, 각 테이블에 PK가 있는가? | ✅ | [01_schema.sql](../sql/01_schema.sql), [README 4-2](../README.md#4-2-데이터-모델스키마-설계) |
 | FK 1:N 관계 2개 이상, 없는 값 참조가 실제로 막히는가? | ✅ 1:N 3개 | [README 4-3](../README.md#4-3-제약조건-적용)의 확인 SQL 실행 → `FOREIGN KEY constraint failed` |
-| 각 테이블에 10행 이상 들어 있는가? | 🔍 초안 (10 / 10 / 12 / 15행) | [02_data.sql](../sql/02_data.sql), `SELECT COUNT(*) FROM 테이블;` |
+| 각 테이블에 10행 이상 들어 있는가? | ✅ 10 / 10 / 12 / 15행 | [02_data.sql](../sql/02_data.sql), `SELECT COUNT(*) FROM 테이블;` |
 | 쿼리 15개 (조회 4, 조인 4, 집계 3, 서브쿼리 1, 수정/삭제 2, 인덱스 1) | ⬜ C단계 | [03_queries.sql](../sql/03_queries.sql) |
 | 쿼리마다 실행 결과가 첨부되어 있는가? | ⬜ D단계 | [results/](../results/) |
 
