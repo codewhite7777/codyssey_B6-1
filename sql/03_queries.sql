@@ -51,11 +51,11 @@ JOIN book ON rental.book_id = book.id
 WHERE rental.returned_at IS NULL
 ORDER BY rental.rented_at;
 
--- Q06. [INNER JOIN] 책마다 카테고리 이름을 붙여 본다
-SELECT book.title, category.name
-FROM book
-JOIN category ON book.category_id = category.id
-ORDER BY book.id;
+-- Q06. [INNER JOIN] 카테고리별 책을 본다 (책이 있는 카테고리만. Q08과 LEFT 한 단어만 다름)
+SELECT category.name, book.title
+FROM category
+JOIN book ON book.category_id = category.id
+ORDER BY category.id;
 
 -- Q07. [LEFT JOIN] 대여 기록이 없는 회원도 포함해서 회원별 대여 번호를 본다
 SELECT member.name, rental.id
@@ -63,7 +63,7 @@ FROM member
 LEFT JOIN rental ON rental.member_id = member.id
 ORDER BY member.id;
 
--- Q08. [LEFT JOIN] 책이 없는 카테고리도 포함해서 카테고리별 책을 본다 (Q06과 비교: 14줄 vs 12줄)
+-- Q08. [LEFT JOIN] 책이 없는 카테고리도 포함해서 카테고리별 책을 본다 (Q06과 비교: 12줄 → 14줄)
 SELECT category.name, book.title
 FROM category
 LEFT JOIN book ON book.category_id = category.id
@@ -126,5 +126,8 @@ FROM member;
 -- ===== 인덱스 =====
 
 -- Q15. [인덱스] rental.member_id에 인덱스를 만든다
--- 이유: Q07, Q09, Q12처럼 회원 기준으로 대여 기록을 찾는 JOIN, WHERE에서 member_id로 자주 찾기 때문
+-- 이유: Q07, Q12처럼 회원 번호로 대여 기록(rental)을 찾는 일이 많아서 member_id로 바로 찾게 하려고
 CREATE INDEX idx_rental_member_id ON rental(member_id);
+
+-- 확인 (15개에 세지 않음, SQLite 전용): rental에 인덱스가 만들어졌는지 본다
+PRAGMA index_list(rental);
